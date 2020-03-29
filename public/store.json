@@ -1,0 +1,37 @@
+{
+    "menu": [
+        {
+            "title": "Jokes",
+            "link": "#"
+        },
+        {
+            "title": "Quotes",
+            "link": "#"
+        },
+        {
+            "title": "Record a video",
+            "link": "#"
+        },
+        {
+            "title": "Write something",
+            "link": "#"
+        },
+        {
+            "title": "Dark mode",
+            "link": "#"
+        }
+    ],
+    "homepage" : [
+        {
+            "title" : "Molux",
+            "description" : "Djopa's letter game !",
+            "link" : "https://www.molux.ovh/",
+            "icon" : "molux.jpg"
+        },
+        {
+            "title" : "Musical Quizz",
+            "description" : "Djopa's musical quizz !",
+            "link" : "https://musicalquiz.ovh/"
+        }
+    ]
+}
