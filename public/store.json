@@ -1,16 +1,20 @@
 {
     "menu": [
         {
+            "title": "Home",
+            "link": "/home"
+        },
+        {
             "title": "Jokes",
-            "link": "#"
+            "link": "/jokes"
         },
         {
             "title": "Quotes",
-            "link": "#"
+            "link": "/quotes"
         },
         {
             "title": "Record a video",
-            "link": "#"
+            "link": "/record"
         },
         {
             "title": "Write something",
@@ -33,5 +37,56 @@
             "description" : "Djopa's musical quizz !",
             "link" : "https://musicalquiz.ovh/"
         }
-    ]
+    ],
+    "jokes" : [
+        {
+            "id" : 1585789697593,
+            "title" : "La blague du siècle",
+            "filename" : "maureendance.mp4",
+            "description" : "Ceci est la description de la vidéo ci-dessus. Oui, une description",
+            "idPerson" : "mchloe"
+        },
+        {
+            "id" : 1585789697593,
+            "title" : "La blague du siècle",
+            "filename" : "test.mp4",
+            "description" : "Ceci est la description de la vidéo ci-dessus. Oui, une description",
+            "idPerson" : "mchloe"
+        }
+    ],
+    "quotes" : [
+        {
+            "id" : 1585789697593,
+            "title" : "La blague du siècle",
+            "filename" : "maureendance.mp4",
+            "quote" : "Boire sans saouler c'est le gaspillage",
+            "author" : "Le Max",
+            "idPerson" : "mchloe"
+        },
+        {
+            "id" : 1585789697593,
+            "title" : "La blague du siècle",
+            "filename" : "test.mp4",
+            "quote" : "En fin d'année certains m'ont dit \"Monsieur, soyez clément\". Mais bien évidemment, je suis resté fidèle. ",
+            "author": "Dr Ciake",
+            "idPerson" : "mchloe"
+        }
+    ],
+    "people" : {
+        "mchloe" : {
+            "id" : "mchloe",
+            "name" : "Maureen Chloé",
+            "pp" : ""
+        },
+        "bftane" : {
+            "id" : "bftane",
+            "name" : "Bryne Tane",
+            "pp" : ""
+        }
+    },
+    "connected" : {
+        "id" : "mchloe",
+        "name" : "Maureen Chloé",
+        "pp" : ""
+    }
 }

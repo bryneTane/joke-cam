@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 const LinkCard = (props) => {
   const classes = useStyles();
 //   const preventDefault = (event) => event.preventDefault();
-  console.log(props.link)
+  // console.log(props.link)
 
   return (
     <a href={props.link} color="inherit" target='_blank' >

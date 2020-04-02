@@ -1,9 +1,11 @@
 import React, {useState, useEffect} from 'react';
+import {Link} from 'react-router-dom';
 import '../css/Skeleton.css';
 
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import Loader from 'react-loader-spinner';
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
@@ -23,8 +25,9 @@ import FormatQuoteIcon from '@material-ui/icons/FormatQuote';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import EditIcon from '@material-ui/icons/Edit';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
+import HomeIcon from '@material-ui/icons/Home';
 import Avatar from '@material-ui/core/Avatar';
-import { purple } from '@material-ui/core/colors';
+import { purple, green } from '@material-ui/core/colors';
 
 import Source from '../tools/data';
 
@@ -42,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+    backgroundColor: green[500],
   },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
@@ -91,7 +95,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const renderIcon = (text) => {
-    if (text === 'Jokes') return <EmojiEmotionsIcon />;
+    if (text === "Home") return <HomeIcon />
+    else if (text === 'Jokes') return <EmojiEmotionsIcon />;
     else if(text === 'Quotes') return <FormatQuoteIcon />
     else if(text === 'Record a video') return <VideocamIcon />;
     else if(text === 'Write something') return <EditIcon />;
@@ -101,7 +106,22 @@ const renderIcon = (text) => {
 export default function Skeleton(props){
     const classes = useStyles();
   const theme = useTheme();
+  const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
+  const [person, setPerson] = useState([]);
+
+  useEffect(() => {
+    fetch(`${process.env.PUBLIC_URL}/store.json`)
+      .then(resp => resp.json())
+      .then(resp => {
+        setPerson(resp.connected);
+        // console.log(elts)
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -112,6 +132,18 @@ export default function Skeleton(props){
   };
 
   const storeDef = Source.getDefs();
+
+  if (isLoading) return (
+    <Loader
+      type="Puff"
+      color={green[500]}
+      height={100}
+      width={100}
+      className='loader'
+    //   timeout={3000} //3 secs
+
+    />
+  );
 
   return (
     <div className={classes.root}>
@@ -147,10 +179,17 @@ export default function Skeleton(props){
         }}
       >
         <div className={classes.drawerHeader}>
-          <Avatar aria-label="recipe" className={classes.avatar}>
-            MC
-          </Avatar>
-          Maureen Chloé
+          { person.pp ?
+            <Avatar aria-label="recipe" className={classes.avatar} 
+                src={`${process.env.PUBLIC_URL}/img/${person.pp}`} /> 
+                :
+            <Avatar aria-label="recipe" className={classes.avatar}>
+                {person.name.split(" ").map((item, index) => {
+                    if (index < 2) return item.charAt(0);
+                })}
+            </Avatar> 
+          }
+          {person.name}
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
@@ -160,7 +199,7 @@ export default function Skeleton(props){
           {storeDef.menu.map((item, index) => (
             <ListItem button key={item.title}>
               <ListItemIcon>{renderIcon(item.title)}</ListItemIcon>
-              <ListItemText primary={item.title} />
+              <Link to={item.link}><ListItemText primary={item.title} /></Link>
             </ListItem>
           ))}
         </List>

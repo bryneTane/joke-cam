@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 // import VideoRecorder from 'react-video-recorder';
 import Home from './components/Home';
+import Jokes from './components/Jokes';
+import Quotes from './components/Quotes';
+import Camera from './components/Camera';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import {green} from '@material-ui/core/colors';
 import Loader from 'react-loader-spinner';
 import Source from './tools/data';
 import './App.css';
@@ -28,10 +32,11 @@ function App() {
     if (isLoading) return (
       <Loader
         type="Puff"
-        color="#00BFFF"
+        color={green[500]}
         height={100}
         width={100}
-        timeout={3000} //3 secs
+        className='loader'
+        // timeout={3000} //3 secs
 
       />
     );
@@ -43,6 +48,9 @@ function App() {
           {/* <Route exact path='/connexion' component={Connexion} />
         <Route exact path='/inscription' component={Inscription} /> */}
           <Route exact path='/home' component={Home} />
+          <Route exact path='/jokes' component={Jokes} />
+          <Route exact path='/quotes' component={Quotes} />
+          <Route exact path='/record' component={Camera} />
           {/* <Route exact path='/deconnexion' component={Deconnexion} /> */}
           {/* <Route exact path='/index.html' render={() => <Home stores={this.state.items}/>} /> */}
           {/* <Route component={ModalSwitch}/> */}

@@ -2,19 +2,25 @@
   "name": "joke-cam",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://lamaterservice.com/test-joke",
   "dependencies": {
     "@material-ui/core": "^4.9.8",
     "@material-ui/icons": "^4.9.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "moment": "^2.24.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-loader-spinner": "^3.1.5",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "react-video-recorder": "^3.17.0",
-    "styled-components": "^5.0.1"
+    "react-video-thumbnail": "^0.1.3",
+    "react-webcam": "^5.0.1",
+    "redux": "^4.0.5",
+    "styled-components": "^5.0.1",
+    "video-react": "^0.14.1"
   },
   "scripts": {
     "start": "react-scripts start",
