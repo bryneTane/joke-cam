@@ -24,7 +24,8 @@ import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
 import FormatQuoteIcon from '@material-ui/icons/FormatQuote';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import EditIcon from '@material-ui/icons/Edit';
-import Brightness4Icon from '@material-ui/icons/Brightness4';
+// import Brightness4Icon from '@material-ui/icons/Brightness4';
+import SettingsIcon from '@material-ui/icons/Settings';
 import HomeIcon from '@material-ui/icons/Home';
 import Avatar from '@material-ui/core/Avatar';
 import { purple, green } from '@material-ui/core/colors';
@@ -98,9 +99,9 @@ const renderIcon = (text) => {
     if (text === "Home") return <HomeIcon />
     else if (text === 'Jokes') return <EmojiEmotionsIcon />;
     else if(text === 'Quotes') return <FormatQuoteIcon />
-    else if(text === 'Record a video') return <VideocamIcon />;
+    else if(text === 'Record something') return <VideocamIcon />;
     else if(text === 'Write something') return <EditIcon />;
-    else return <Brightness4Icon />
+    else return <SettingsIcon />
 }
 
 export default function Skeleton(props){

@@ -13,16 +13,16 @@
             "link": "/quotes"
         },
         {
-            "title": "Record a video",
+            "title": "Record something",
             "link": "/record"
         },
         {
             "title": "Write something",
-            "link": "#"
+            "link": "/write"
         },
         {
-            "title": "Dark mode",
-            "link": "#"
+            "title": "Settings",
+            "link": "/settings"
         }
     ],
     "homepage" : [
@@ -30,7 +30,7 @@
             "title" : "Molux",
             "description" : "Djopa's letter game !",
             "link" : "https://www.molux.ovh/",
-            "icon" : "molux.jpg"
+            "icon" : "molux.JPG"
         },
         {
             "title" : "Musical Quizz",
@@ -44,14 +44,32 @@
             "title" : "La blague du siècle",
             "filename" : "maureendance.mp4",
             "description" : "Ceci est la description de la vidéo ci-dessus. Oui, une description",
-            "idPerson" : "mchloe"
+            "idPerson" : "mchloe",
+            "type" : "video"
         },
         {
             "id" : 1585789697593,
             "title" : "La blague du siècle",
             "filename" : "test.mp4",
             "description" : "Ceci est la description de la vidéo ci-dessus. Oui, une description",
-            "idPerson" : "mchloe"
+            "idPerson" : "mchloe",
+            "type" : "video"
+        },
+        {
+            "id" : 1585789697593,
+            "title" : "La blague du siècle",
+            "filename" : "sheney.mp3",
+            "description" : "Ceci est la description de la vidéo ci-dessus. Oui, une description",
+            "idPerson" : "bftane",
+            "type" : "audio"
+        },
+        {
+            "id" : 1585789697593,
+            "title" : "La blague du siècle",
+            "filename" : "molux.JPG",
+            "description" : "Ceci est la description de la vidéo ci-dessus. Oui, une description",
+            "idPerson" : "mchloe",
+            "type" : "image"
         }
     ],
     "quotes" : [
@@ -74,19 +92,22 @@
     ],
     "people" : {
         "mchloe" : {
+            "date" : 1585789697593,
             "id" : "mchloe",
             "name" : "Maureen Chloé",
-            "pp" : ""
+            "pp" : "mchloe.jpeg"
         },
         "bftane" : {
+            "date" : 1585789697593,
             "id" : "bftane",
             "name" : "Bryne Tane",
             "pp" : ""
         }
     },
     "connected" : {
+        "date" : 1585789697593,
         "id" : "mchloe",
         "name" : "Maureen Chloé",
-        "pp" : ""
+        "pp" : "mchloe.jpeg"
     }
 }

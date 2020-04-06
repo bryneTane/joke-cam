@@ -12,6 +12,7 @@ import Divider from '@material-ui/core/Divider';
 import Loader from 'react-loader-spinner';
 import moment from 'moment';
 import { Player } from 'video-react';
+import ReactAudioPlayer from 'react-audio-player';
 import "video-react/dist/video-react.css";
 
 const useStyles = makeStyles((theme) => ({
@@ -22,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
   media: {
     // height: 140,
     // paddingTop: '56.25%', // 16:9
+    textAlign : "center",
   },
   expand: {
     transform: 'rotate(0deg)',
@@ -39,6 +41,11 @@ const useStyles = makeStyles((theme) => ({
   trait : {
     marginBottom: 10,
   },
+  preview : {
+    minWidth : '100%',
+    // marginTop : 30,
+    // maxHeight : 450,
+  },
 }));
 
 let dateDisplay = (date) => {
@@ -48,7 +55,7 @@ let dateDisplay = (date) => {
     else return moment(date).format('MMMM DD, HH:MM');
 }
 
-function VideoCard(props) {
+function MediaCard(props) {
   const classes = useStyles();
 
   return (
@@ -84,11 +91,18 @@ function VideoCard(props) {
         // height="140"
         title={props.item.Title}
       >
-          <Player
+          {(props.item.type === 'video') && <Player
             playsInline
             // poster="/assets/poster.png"
             src={`${process.env.PUBLIC_URL}/videos/${props.item.filename}`}
-            />
+            className={classes.preview}
+            />}
+          {(props.item.type === 'image') && <img src={`${process.env.PUBLIC_URL}/img/${props.item.filename}`} alt="publish" className={classes.preview} />}
+          {(props.item.type === 'audio') && <ReactAudioPlayer
+                                          src={`${process.env.PUBLIC_URL}/audios/${props.item.filename}`}
+                                          controls
+                                          className={classes.preview}
+                                        />}
       </CardMedia>
       <CardContent>
          
@@ -147,7 +161,7 @@ export default function Jokes(props){
                 <Divider className={classes.trait} />
                 {elts.map((item, index) => {
                     console.log(`${process.env.PUBLIC_URL}/videos/${item.filename}`)
-                    return <VideoCard item={item} key={index} person={people[item.idPerson]} />
+                    return <MediaCard item={item} key={index} person={people[item.idPerson]} />
                 })}
             </Skeleton>
         </div>

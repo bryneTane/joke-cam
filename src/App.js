@@ -3,7 +3,10 @@ import React, { useState, useEffect } from 'react';
 import Home from './components/Home';
 import Jokes from './components/Jokes';
 import Quotes from './components/Quotes';
-import Camera from './components/Camera';
+import Write from './components/Write';
+// import Camera from './components/Camera';
+import Media from './components/Media';
+import Settings from './components/Settings';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import {green} from '@material-ui/core/colors';
 import Loader from 'react-loader-spinner';
@@ -50,7 +53,9 @@ function App() {
           <Route exact path='/home' component={Home} />
           <Route exact path='/jokes' component={Jokes} />
           <Route exact path='/quotes' component={Quotes} />
-          <Route exact path='/record' component={Camera} />
+          <Route exact path='/record' component={Media} />
+          <Route exact path='/write' component={Write} />
+          <Route exact path='/settings' component={Settings} />
           {/* <Route exact path='/deconnexion' component={Deconnexion} /> */}
           {/* <Route exact path='/index.html' render={() => <Home stores={this.state.items}/>} /> */}
           {/* <Route component={ModalSwitch}/> */}
