@@ -46,9 +46,13 @@ const useStyles = makeStyles((theme) => ({
     // marginTop : 30,
     // maxHeight : 450,
   },
+  image: {
+    width : '100%',
+  }
 }));
 
 let dateDisplay = (date) => {
+    date = Number(date);
     if (moment(date).isSame(moment(Date.now()), 'day')) return 'Today, ' + moment(date).format('HH:mm');
     else if(((moment(Date.now()).dayOfYear() - moment(date).dayOfYear()) === 1) 
                 && moment(date).isSame(moment(Date.now()), 'year')) return 'Yesterday, ' + moment(date).format('HH:mm');
@@ -57,7 +61,7 @@ let dateDisplay = (date) => {
 
 function MediaCard(props) {
   const classes = useStyles();
-
+  props.item.type = props.item.type.split('/')[0];
   return (
     <Card className={classes.root}>
       <CardHeader
@@ -82,14 +86,14 @@ function MediaCard(props) {
         //   </IconButton>
         // }
         title={props.person.name}
-        subheader={dateDisplay(props.item.id)}
+        subheader={dateDisplay(props.item.date)}
       />
       <CardMedia
         component="div"
         className={classes.media}
         // src={`${process.env.PUBLIC_URL}/videos/${props.item.filename}`}
         // height="140"
-        title={props.item.Title}
+        // title={props.item.title}
       >
           {(props.item.type === 'video') && <Player
             playsInline
@@ -97,7 +101,7 @@ function MediaCard(props) {
             src={`${process.env.PUBLIC_URL}/videos/${props.item.filename}`}
             className={classes.preview}
             />}
-          {(props.item.type === 'image') && <img src={`${process.env.PUBLIC_URL}/img/${props.item.filename}`} alt="publish" className={classes.preview} />}
+          {(props.item.type === 'image') && <img src={`${process.env.PUBLIC_URL}/img/${props.item.filename}`} alt="publish" className={classes.image} />}
           {(props.item.type === 'audio') && <ReactAudioPlayer
                                           src={`${process.env.PUBLIC_URL}/audios/${props.item.filename}`}
                                           controls
@@ -122,13 +126,25 @@ export default function Jokes(props){
     const [elts, setElts] = useState([]);
     const [people, setPeople] = useState([]);
     useEffect(() => {
-        fetch(`${process.env.PUBLIC_URL}/store.json`)
+        fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/jokes`)
           .then(resp => resp.json())
           .then(resp => {
-            setElts(resp.jokes);
-            setPeople(resp.people);
+            setElts(resp.data);
             // console.log(elts)
-            setIsLoading(false);
+            fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/users`)
+              .then(resp2 => resp2.json())
+              .then(resp2 => {
+                let result = [];
+                resp2.data.forEach(elt => {
+                  result[elt.id] = elt;
+                });
+                setPeople(result);
+                // console.log(elts)
+                setIsLoading(false);
+              })
+              .catch(err => {
+                console.log(err);
+              });
           })
           .catch(err => {
             console.log(err);
@@ -159,10 +175,7 @@ export default function Jokes(props){
                 Let's Joke !
                 </Typography>
                 <Divider className={classes.trait} />
-                {elts.map((item, index) => {
-                    console.log(`${process.env.PUBLIC_URL}/videos/${item.filename}`)
-                    return <MediaCard item={item} key={index} person={people[item.idPerson]} />
-                })}
+                {elts && elts.sort((a, b) => Number(b.date) - Number(a.date)).map((item, index) => <MediaCard item={item} key={index} person={people[item.idPerson]} />)}
             </Skeleton>
         </div>
     ); 

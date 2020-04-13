@@ -107,22 +107,23 @@ const renderIcon = (text) => {
 export default function Skeleton(props){
     const classes = useStyles();
   const theme = useTheme();
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
-  const [person, setPerson] = useState([]);
+  // const [person, setPerson] = useState([]);
 
-  useEffect(() => {
-    fetch(`${process.env.PUBLIC_URL}/store.json`)
-      .then(resp => resp.json())
-      .then(resp => {
-        setPerson(resp.connected);
-        // console.log(elts)
-        setIsLoading(false);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }, []);
+  const person = JSON.parse(localStorage.getItem('joke-cam-user'));
+  // useEffect(() => {
+  //   fetch(`${process.env.PUBLIC_URL}/store.json`)
+  //     .then(resp => resp.json())
+  //     .then(resp => {
+  //       setPerson(resp.connected);
+  //       // console.log(elts)
+  //       setIsLoading(false);
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // }, []);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -134,17 +135,17 @@ export default function Skeleton(props){
 
   const storeDef = Source.getDefs();
 
-  if (isLoading) return (
-    <Loader
-      type="Puff"
-      color={green[500]}
-      height={100}
-      width={100}
-      className='loader'
-    //   timeout={3000} //3 secs
+  // if (isLoading) return (
+  //   <Loader
+  //     type="Puff"
+  //     color={green[500]}
+  //     height={100}
+  //     width={100}
+  //     className='loader'
+  //   //   timeout={3000} //3 secs
 
-    />
-  );
+  //   />
+  // );
 
   return (
     <div className={classes.root}>

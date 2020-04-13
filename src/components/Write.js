@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     width : "100%",
     fontSize : 17,
     border : 'none',
-    borderBottom : "0.1px solid black",
+    borderBottom : "0.5px solid black",
     transition: '0.3s',
     '&:focus' : {
       borderBottom : "2px solid " + green[500],

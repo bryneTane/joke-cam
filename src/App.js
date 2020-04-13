@@ -7,6 +7,8 @@ import Write from './components/Write';
 // import Camera from './components/Camera';
 import Media from './components/Media';
 import Settings from './components/Settings';
+import SignUp from './components/SignUp';
+import SignIn from './components/SignIn';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import {green} from '@material-ui/core/colors';
 import Loader from 'react-loader-spinner';
@@ -23,9 +25,25 @@ function App() {
       .then(resp => resp.json())
       .then(resp => {
         Source.setDefs(resp);
-        // console.log(resp);
-        setStore(resp);
+        // if(localStorage.getItem('joke-cam-user'))
+        //   fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/user/${JSON.parse(localStorage.getItem('joke-cam-user')).id}`)
+        //   .then(response => response.json())
+        //   .then(data => {
+        //       data = data.data;
+        //       localStorage.setItem('joke-cam-user', JSON.stringify({
+        //           date: data.date,
+        //           id: data.id,
+        //           name: data.name,
+        //           pp: data.pp,
+        //       }));
+        //       setIsLoading(false);
+        //   })
+        //   .catch(err => {
+        //       console.log(err);
+        //   })
+        // // console.log(resp);
         setIsLoading(false);
+        setStore(resp);
       })
       .catch(err => {
         console.log(err);
@@ -56,6 +74,8 @@ function App() {
           <Route exact path='/record' component={Media} />
           <Route exact path='/write' component={Write} />
           <Route exact path='/settings' component={Settings} />
+          <Route exact path='/signup' component={SignUp} />
+          <Route exact path='/signin' component={SignIn} />
           {/* <Route exact path='/deconnexion' component={Deconnexion} /> */}
           {/* <Route exact path='/index.html' render={() => <Home stores={this.state.items}/>} /> */}
           {/* <Route component={ModalSwitch}/> */}

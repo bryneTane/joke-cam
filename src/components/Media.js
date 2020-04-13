@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {Redirect} from 'react-router-dom';
 import '../css/Home.css';
 import Skeleton from './Skeleton';
 import { makeStyles } from '@material-ui/core/styles';
@@ -14,7 +15,8 @@ import Loader from 'react-loader-spinner';
 import { Player } from 'video-react';
 import ReactAudioPlayer from 'react-audio-player';
 import Button from '@material-ui/core/Button';
-import ExifOrientationImg from 'react-exif-orientation-img'
+import ExifOrientationImg from 'react-exif-orientation-img';
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     width : "90%",
     fontSize : 17,
     border : 'none',
-    borderBottom : "0.1px solid black",
+    borderBottom : "0.5px solid black",
     transition: '0.3s',
     '&:focus' : {
       borderBottom : "2px solid " + green[500],
@@ -84,50 +86,85 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const Preview = (props) => {
+  const classes = useStyles();
+  let type = props.type;
+  if (type.startsWith('image')) return <ExifOrientationImg src={props.content} alt="publish" className={classes.preview} />;
+  else if (type.startsWith('video')) return <Player
+                                              playsInline
+                                              // poster="/assets/poster.png"
+                                              src={props.content}
+                                              className={classes.preview}
+                                              />;
+  else return <ReactAudioPlayer
+                src={props.content}
+                autoPlay
+                controls
+                className={classes.preview}
+              />;                                            
+}
+
 export default function Media(props){
   
     let fileReader;
     
     const classes = useStyles();
-    const storeDef = Source.getDefs();
+    // const storeDef = Source.getDefs();
     const [content, setContent] = useState(null);
     const [type, setType] = useState("");
     const [ready, setReady] = useState(false);
+    const [description, setDescription] = useState('');
+    const [fail, setFail] = useState(false);
+    const [redirect, setReadirect] = useState(false);
     
     const handleFileRead = (e) => {
       setContent(fileReader.result);
       // console.log(content);
     }
 
+    const publish = () => {
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            date: Date.now(),
+            description: description,
+            idPerson: JSON.parse(localStorage.getItem('joke-cam-user')).id,
+            type: type,
+            file: content,
+         })
+      };
+      fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/joke`, requestOptions)
+          .then(response => response.json())
+          .then(data => {
+              console.log(data);
+              setFail(false);
+              setReadirect(true);
+          })
+          .catch(err => {
+              setFail(true);
+              console.log(err);
+          })
+    }
+
     const handleFileChosen = (file) => {
-      setContent(null);
-      console.log(file.type);
-      setType(file.type);
-      fileReader = new FileReader();
-      fileReader.onloadend = handleFileRead;
-      fileReader.readAsDataURL(file);
+      // setContent(null);
+      // console.log(file.type);
+      if(file){
+        setType(file.type);
+        fileReader = new FileReader();
+        fileReader.onloadend = handleFileRead;
+        fileReader.readAsDataURL(file);
+      }
     }
 
     const textChange = (e) => {
+      setDescription(e.target.value);
       if(e.target.value) setReady(true);
       else setReady(false);
     }
 
-    const Preview = (props) => {
-      if (type.startsWith('image')) return <ExifOrientationImg src={props.content} alt="publish" className={classes.preview} />;
-      else if (type.startsWith('video')) return <Player
-                                                  playsInline
-                                                  // poster="/assets/poster.png"
-                                                  src={props.content}
-                                                  className={classes.preview}
-                                                  />;
-      else return <ReactAudioPlayer
-                    src={props.content}
-                    autoPlay
-                    controls
-                    className={classes.preview}
-                  />;                                            
-    }
+    if(redirect) return <Redirect to={'/jokes'} />;
 
     return (
         <div>
@@ -150,6 +187,7 @@ export default function Media(props){
                         // capture="camera"
                         onChange={e => handleFileChosen(e.target.files[0])}
                     />
+                    {fail && <Alert severity="error">Oops !!! The request unfortunately failed !</Alert>}
                     <label htmlFor="contained-button-file">
                         <Fab className={classes.picButton} aria-label="add" component='span' >
                             <CameraAltOutlinedIcon />
@@ -162,7 +200,7 @@ export default function Media(props){
                       className={classes.textArea}
                       onChange={textChange} />
                     {(type && !content) && <Loader type="Puff" color={green[500]} height={100} width={100} className={classes.loader} />}
-                    {(content && ready) && <Button variant="contained" color="primary" className={classes.publish}>
+                    {(content && ready) && <Button variant="contained" color="primary" className={classes.publish} onClick={publish}>
                                                 Publish
                                             </Button>}
                     {content && <Preview content={content} type={type} /> }

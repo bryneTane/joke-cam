@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {Redirect} from 'react-router-dom';
 import '../css/Home.css';
 import Skeleton from './Skeleton';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -16,6 +17,8 @@ import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import WallpaperIcon from '@material-ui/icons/Wallpaper';
+import ExifOrientationImg from 'react-exif-orientation-img';
+import Alert from '@material-ui/lab/Alert';
 
 const CssTextField = withStyles({
     root: {
@@ -67,17 +70,32 @@ const useStyles = makeStyles((theme) => ({
   avatar : {
     width : '60vw',
     height : '60vw',
-    marginBottom : 30,
+    // marginBottom : 30,
     fontSize: 60,
     backgroundColor: purple[500],
   },
   speedDial: {
+    // display: "flex",
+    // flexDirection: "column",
+    // alignItems: "center",
     position: 'relative',
-    bottom : '15vw',
-    left : '16vw',
+    bottom: '10vw',
+},
+composite: {
+  display:  'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
 },
 label : {
     lineHeight: 0,
+},
+image : {
+    minHeight: '100%',
+    width : "100%",
+},
+logout: {
+  marginTop: 40,
+  width: '70%',
 },
 }));
 
@@ -100,7 +118,6 @@ function OpenIconSpeedDial(props) {
     };
   
     return (
-      <div>
         <SpeedDial
           ariaLabel="SpeedDial openIcon example"
           className={classes.speedDial}
@@ -109,7 +126,7 @@ function OpenIconSpeedDial(props) {
           onClose={handleClose}
           onOpen={handleOpen}
           open={open}
-          direction='right'
+          direction='left'
         > 
           {actions.map((action) => (
             (action.name === "Change") ?
@@ -129,18 +146,19 @@ function OpenIconSpeedDial(props) {
                     />
           ))}
         </SpeedDial>
-      </div>
     );
   }
 
 export default function Settings(props){
   
     let fileReader;
-    
     const classes = useStyles();
-    const storeDef = Source.getDefs();
-    const [content, setContent] = useState(`${process.env.PUBLIC_URL}/img/${storeDef.connected.pp}`);
-    const [name, setName] = useState(storeDef.connected.name);
+    // const storeDef = Source.getDefs();
+    const [connected, setConnected] = useState(JSON.parse(localStorage.getItem('joke-cam-user')))
+    const [content, setContent] = useState(connected.pp ? `${process.env.PUBLIC_URL}/img/${connected.pp}` : null);
+    const [name, setName] = useState(connected.name);
+    const [fail, setFail] = useState(false);
+    const [logout, setlogout] = useState(false);
 
     const textChange = (e) => {
         setName(e.target.value);
@@ -148,6 +166,36 @@ export default function Settings(props){
 
       const deletePhoto = () => {
           setContent(null);
+      }
+
+      const handleSend = () => {
+        console.log(content)
+        const requestOptions = {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+              id: connected.id,
+              name: name,
+              pp: (content && content.startsWith(process.env.PUBLIC_URL)) ? "" : content,
+           })
+        };
+        fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/user/${connected.id}`, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                localStorage.setItem('joke-cam-user', JSON.stringify({
+                    id: connected.id,
+                    name: connected.name,
+                    date: connected.date,
+                    pp: content ? (connected.id + '.jpg') : "",
+                  })
+                );
+                setFail(false);
+            })
+            .catch(err => {
+                setFail(true);
+                console.log(err);
+            })
       }
 
       const handleFileRead = (e) => {
@@ -163,6 +211,13 @@ export default function Settings(props){
         fileReader.onloadend = handleFileRead;
         fileReader.readAsDataURL(file);
       }
+
+      const disconnect = () => {
+        localStorage.removeItem('joke-cam-user');
+        setlogout(true);
+      }
+
+    if(logout) return <Redirect to={'/signin'} />
 
     return (
         <div>
@@ -185,17 +240,20 @@ export default function Settings(props){
                         // capture="camera"
                         onChange={e => handleFileChosen(e.target.files[0])}
                     />
+                    <div className={classes.composite}>
                         { content ?
-                            <Avatar aria-label="recipe" className={classes.avatar} 
-                            src={content} /> 
+                            <Avatar aria-label="recipe" className={classes.avatar}>
+                                <ExifOrientationImg src={content} alt="publish" className={classes.image} />
+                            </Avatar> 
                             :
                             <Avatar aria-label="recipe" className={classes.avatar}>
-                                {storeDef.connected.name.split(" ").map((item, index) => {
+                                {connected.name.split(" ").map((item, index) => {
                                     if (index < 2) return item.charAt(0);
                                 })}
                             </Avatar> 
                         }
                         <OpenIconSpeedDial deletePhoto={deletePhoto} />
+                    </div>
                     <CssTextField
                         autoFocus
                         margin="dense"
@@ -207,9 +265,13 @@ export default function Settings(props){
                         //   className={classes.field}
                         onChange={textChange}
                         />
-                    {name && <Button variant="contained" color="primary" className={classes.publish}>
+                    {name && <Button variant="contained" color="primary" onClick={handleSend} className={classes.publish}>
                                                 Save
                                             </Button>}
+                    {fail && <Alert severity="error">Oops !!! The request unfortunately failed !</Alert>}
+                    <Button onClick={disconnect} className={classes.logout} variant="outlined" color="secondary">
+                      Log Out
+                    </Button>
                 </div>
             </Skeleton>
         </div>
