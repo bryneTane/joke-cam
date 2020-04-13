@@ -115,7 +115,7 @@ export default function Media(props){
     const [ready, setReady] = useState(false);
     const [description, setDescription] = useState('');
     const [fail, setFail] = useState(false);
-    const [redirect, setReadirect] = useState(false);
+    const [redirect, setRedirect] = useState(false);
     
     const handleFileRead = (e) => {
       setContent(fileReader.result);
@@ -139,7 +139,7 @@ export default function Media(props){
           .then(data => {
               console.log(data);
               setFail(false);
-              setReadirect(true);
+              setRedirect(true);
           })
           .catch(err => {
               setFail(true);

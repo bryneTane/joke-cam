@@ -14,6 +14,7 @@ import moment from 'moment';
 import { Player } from 'video-react';
 import ReactAudioPlayer from 'react-audio-player';
 import "video-react/dist/video-react.css";
+import Source from '../tools/data';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -121,30 +122,16 @@ function MediaCard(props) {
 export default function Jokes(props){
 
     const classes = useStyles();
-
+    const people = Source.getPeople();
     const [isLoading, setIsLoading] = useState(true);
     const [elts, setElts] = useState([]);
-    const [people, setPeople] = useState([]);
     useEffect(() => {
         fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/jokes`)
           .then(resp => resp.json())
           .then(resp => {
             setElts(resp.data);
             // console.log(elts)
-            fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/users`)
-              .then(resp2 => resp2.json())
-              .then(resp2 => {
-                let result = [];
-                resp2.data.forEach(elt => {
-                  result[elt.id] = elt;
-                });
-                setPeople(result);
-                // console.log(elts)
-                setIsLoading(false);
-              })
-              .catch(err => {
-                console.log(err);
-              });
+            setIsLoading(false);
           })
           .catch(err => {
             console.log(err);

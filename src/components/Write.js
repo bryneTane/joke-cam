@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {Redirect} from 'react-router-dom';
 import '../css/Home.css';
 import Skeleton from './Skeleton';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -10,6 +11,7 @@ import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import Source from '../tools/data';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Alert from '@material-ui/lab/Alert';
 
 const CssTextField = withStyles({
     root: {
@@ -72,10 +74,12 @@ const useStyles = makeStyles((theme) => ({
 export default function Settings(props){
     
     const classes = useStyles();
-    const storeDef = Source.getDefs();
+    // const storeDef = Source.getDefs();
     const [ready, setReady] = useState(false);
     const [author, setAuthor] = useState("");
     const [quote, setQuote] = useState("");
+    const [fail, setFail] = useState(false);
+    const [redirect, setRedirect] = useState(false);
 
     const authorChange = (e) => {
         setAuthor(e.target.value);
@@ -83,11 +87,37 @@ export default function Settings(props){
     const quoteChange = (e) => {
         setQuote(e.target.value);
       }
+
+    const publish = () => {
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            date: Date.now(),
+            quote: quote,
+            idPerson: JSON.parse(localStorage.getItem('joke-cam-user')).id,
+            author: author,
+         })
+      };
+      fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/quote`, requestOptions)
+          .then(response => response.json())
+          .then(data => {
+              console.log(data);
+              setFail(false);
+              setRedirect(true);
+          })
+          .catch(err => {
+              setFail(true);
+              console.log(err);
+          })
+    }
     
     useEffect(() => {
         if(quote && author && quote.trim() && author.trim()) setReady(true);
         else setReady(false);
     }, [author, quote])
+
+    if(redirect) return <Redirect to={'/quotes'} />;
     
     return (
         <div>
@@ -102,6 +132,7 @@ export default function Settings(props){
                 </Typography>
                 <Divider className={classes.trait} />
                 <div className={classes.upload}>
+                    {fail && <Alert severity="error">Oops !!! The request unfortunately failed !</Alert>}
                     <CssTextField
                         autoFocus
                         margin="dense"
@@ -118,7 +149,7 @@ export default function Settings(props){
                       // rowsMin={3} 
                       className={classes.textArea}
                       onChange={quoteChange} />
-                    {ready && <Button variant="contained" color="primary" className={classes.publish}>
+                    {ready && <Button variant="contained" color="primary" className={classes.publish} onClick={publish}>
                         Publish
                     </Button>}
                 </div>

@@ -25,6 +25,16 @@ function App() {
       .then(resp => resp.json())
       .then(resp => {
         Source.setDefs(resp);
+        fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/users`)
+              .then(resp2 => resp2.json())
+              .then(resp2 => {
+                Source.setPeople(resp2.data);
+                // console.log(elts)
+                setIsLoading(false);
+              })
+              .catch(err => {
+                console.log(err);
+              });
         // if(localStorage.getItem('joke-cam-user'))
         //   fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/user/${JSON.parse(localStorage.getItem('joke-cam-user')).id}`)
         //   .then(response => response.json())
@@ -42,7 +52,7 @@ function App() {
         //       console.log(err);
         //   })
         // // console.log(resp);
-        setIsLoading(false);
+
         setStore(resp);
       })
       .catch(err => {

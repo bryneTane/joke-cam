@@ -12,6 +12,7 @@ import Loader from 'react-loader-spinner';
 import moment from 'moment';
 // import { Player } from 'video-react';
 import "video-react/dist/video-react.css";
+import Source from '../tools/data';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -80,7 +81,7 @@ function TextCard(props) {
         //   </IconButton>
         // }
         title={props.person.name}
-        subheader={dateDisplay(props.item.id)}
+        subheader={dateDisplay(props.item.date)}
       />
       <CardContent className={classes.quoteContent} >
          
@@ -98,23 +99,21 @@ function TextCard(props) {
 export default function Quotes(props){
 
     const classes = useStyles();
-
+    const people = Source.getPeople();
     const [isLoading, setIsLoading] = useState(true);
     const [elts, setElts] = useState([]);
-    const [people, setPeople] = useState([]);
     useEffect(() => {
-        fetch(`${process.env.PUBLIC_URL}/store.json`)
-          .then(resp => resp.json())
-          .then(resp => {
-            setElts(resp.quotes);
-            setPeople(resp.people);
-            // console.log(elts)
-            setIsLoading(false);
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      }, []);
+      fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/quotes`)
+        .then(resp => resp.json())
+        .then(resp => {
+          setElts(resp.data);
+          // console.log(elts)
+          setIsLoading(false);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }, []);
 
       if (isLoading) return (
         <Loader
@@ -140,10 +139,7 @@ export default function Quotes(props){
                 Funny Quotes !
                 </Typography>
                 <Divider className={classes.trait} />
-                {elts.map((item, index) => {
-                    console.log(`${process.env.PUBLIC_URL}/videos/${item.filename}`)
-                    return <TextCard item={item} key={index} person={people[item.idPerson]} />
-                })}
+                {elts && elts.sort((a, b) => Number(b.date) - Number(a.date)).map((item, index) => <TextCard item={item} key={index} person={people[item.idPerson]} />)}
             </Skeleton>
         </div>
     ); 
