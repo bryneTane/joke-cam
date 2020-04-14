@@ -183,7 +183,7 @@ export default function Skeleton(props){
         <div className={classes.drawerHeader}>
           { person.pp ?
             <Avatar aria-label="recipe" className={classes.avatar} 
-                src={`${process.env.PUBLIC_URL}/img/${person.pp}`} /> 
+                src={`${Source.server}/img/${person.pp}`} /> 
                 :
             <Avatar aria-label="recipe" className={classes.avatar}>
                 {person.name.split(" ").map((item, index) => {

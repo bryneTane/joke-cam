@@ -62,7 +62,7 @@ function TextCard(props) {
       <CardHeader
         avatar={ props.person.pp ?
             <Avatar aria-label="recipe" className={classes.avatar} 
-                src={`${process.env.PUBLIC_URL}/img/${props.person.pp}`} /> 
+                src={`${Source.server}/img/${props.person.pp}`} /> 
                 :
             <Avatar aria-label="recipe" className={classes.avatar}>
                 {props.person.name.split(" ").map((item, index) => {

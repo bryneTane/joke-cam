@@ -23,7 +23,7 @@ createJoke = (req, res) => {
 
     var imageBuffer = decodeBase64Image(body.file);
     // console.log(process.env.PUBLIC_URL)
-    fs.writeFile(`../public/${directoryName(body.type)}/${filename}`, imageBuffer.data, function(err) { 
+    fs.writeFile(`./${directoryName(body.type)}/${filename}`, imageBuffer.data, function(err) { 
         // console.log(err);
         if(!err){
             body.filename = filename;

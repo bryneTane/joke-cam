@@ -75,7 +75,7 @@ function App() {
     return (
       <BrowserRouter basename={`${process.env.PUBLIC_URL}/`}>
         <Switch>
-          <Route exact path='/' render={() => <Redirect to={'/home'} />} />
+          <Route exact path='/' render={() => <Redirect to={'/signin'} />} />
           {/* <Route exact path='/connexion' component={Connexion} />
         <Route exact path='/inscription' component={Inscription} /> */}
           <Route exact path='/home' component={Home} />

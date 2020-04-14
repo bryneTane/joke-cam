@@ -70,7 +70,7 @@ updateUser = async (req, res) => {
         if(body.pp){
             var imageBuffer = decodeBase64Image(body.pp);
             // console.log(process.env.PUBLIC_URL)
-            fs.writeFile(`../public/img/${req.params.id}.jpg`, imageBuffer.data, function(err) { 
+            fs.writeFile(`./img/${req.params.id}.jpg`, imageBuffer.data, function(err) { 
                 // console.log(err);
                 if(!err) user.pp = req.params.id + '.jpg';
                 user

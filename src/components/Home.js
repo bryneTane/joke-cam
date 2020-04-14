@@ -52,7 +52,7 @@ const LinkCard = (props) => {
         <CardHeader
             avatar={ props.icon ?
             <Avatar aria-label="recipe" className={classes.avatar} 
-                src={`${process.env.PUBLIC_URL}/img/${props.icon}`} /> 
+                src={`${Source.server}/img/${props.icon}`} /> 
                 :
             <Avatar aria-label="recipe" className={classes.avatar}>
                 {props.title.charAt(0)}

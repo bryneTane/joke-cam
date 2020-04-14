@@ -155,7 +155,7 @@ export default function Settings(props){
     const classes = useStyles();
     // const storeDef = Source.getDefs();
     const [connected, setConnected] = useState(JSON.parse(localStorage.getItem('joke-cam-user')))
-    const [content, setContent] = useState(connected.pp ? `${process.env.PUBLIC_URL}/img/${connected.pp}` : null);
+    const [content, setContent] = useState(connected.pp ? `${Source.server}/img/${connected.pp}` : null);
     const [name, setName] = useState(connected.name);
     const [fail, setFail] = useState(false);
     const [logout, setlogout] = useState(false);
@@ -176,7 +176,7 @@ export default function Settings(props){
           body: JSON.stringify({ 
               id: connected.id,
               name: name,
-              pp: (content && content.startsWith(process.env.PUBLIC_URL)) ? "" : content,
+              pp: (content && content.startsWith(Source.server)) ? "" : content,
            })
         };
         fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/user/${connected.id}`, requestOptions)

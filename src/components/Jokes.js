@@ -68,7 +68,7 @@ function MediaCard(props) {
       <CardHeader
         avatar={ props.person.pp ?
             <Avatar aria-label="recipe" className={classes.avatar} 
-                src={`${process.env.PUBLIC_URL}/img/${props.person.pp}`} /> 
+                src={`${Source.server}/img/${props.person.pp}`} /> 
                 :
             <Avatar aria-label="recipe" className={classes.avatar}>
                 {props.person.name.split(" ").map((item, index) => {
@@ -92,19 +92,19 @@ function MediaCard(props) {
       <CardMedia
         component="div"
         className={classes.media}
-        // src={`${process.env.PUBLIC_URL}/videos/${props.item.filename}`}
+        // src={`${Source.server}/videos/${props.item.filename}`}
         // height="140"
         // title={props.item.title}
       >
           {(props.item.type === 'video') && <Player
             playsInline
             // poster="/assets/poster.png"
-            src={`${process.env.PUBLIC_URL}/videos/${props.item.filename}`}
+            src={`${Source.server}/videos/${props.item.filename}`}
             className={classes.preview}
             />}
-          {(props.item.type === 'image') && <img src={`${process.env.PUBLIC_URL}/img/${props.item.filename}`} alt="publish" className={classes.image} />}
+          {(props.item.type === 'image') && <img src={`${Source.server}/img/${props.item.filename}`} alt="publish" className={classes.preview} />}
           {(props.item.type === 'audio') && <ReactAudioPlayer
-                                          src={`${process.env.PUBLIC_URL}/audios/${props.item.filename}`}
+                                          src={`${Source.server}/audios/${props.item.filename}`}
                                           controls
                                           className={classes.preview}
                                         />}
