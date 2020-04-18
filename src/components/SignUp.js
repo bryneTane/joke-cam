@@ -84,6 +84,7 @@ export default function SignUp() {
   const [ready, setReady] = useState(false);
   const [redirect, setRedirect] = useState(false);
   const [fail, setFail] = useState(false);
+  const [idUsed, setIdUsed] = useState(false);
 
   const handleChange = (e) => {
       if(e.target.id === 'firstname') setFirstName(e.target.value.trim());
@@ -112,8 +113,13 @@ export default function SignUp() {
     fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/user`, requestOptions)
         .then(response => response.json())
         .then(data => {
+            if (data.message === "449") {
+                setIdUsed(true);
+                throw new Error("Bad response from server");
+            }
             console.log(data);
             setFail(false);
+            setIdUsed(false);
             setRedirect(true);
         })
         .catch(err => {
@@ -137,7 +143,8 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        {fail && <Alert severity="error">Oops !!! The request unfortunately failed !</Alert>}
+        {fail && !idUsed && <Alert severity="error">Oops !!! The request unfortunately failed !</Alert>}
+        {idUsed && <Alert severity="error">This user id is already used !! Choose another one</Alert>}
         <div className={classes.form}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>

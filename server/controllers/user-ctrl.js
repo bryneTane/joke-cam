@@ -3,36 +3,45 @@ const fs = require('fs');
 const User = require('../models/user-model');
 
 createUser = (req, res) => {
-    const body = req.body;
 
-    if (!body) {
-        return res.status(400).json({
-            success: false,
-            error: 'You must provide a user',
-        })
-    }
+    User.findOne({id : req.body.id}, (err, user) => {
+        if (!user){
+            const body = req.body;
 
-    const user = new User(body)
+            if (!body) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'You must provide a user',
+                })
+            }
 
-    if (!user) {
-        return res.status(400).json({ success: false, error: err })
-    }
+            const user = new User(body)
 
-    user
-        .save()
-        .then(() => {
-            return res.status(201).json({
-                success: true,
-                id: user._id,
-                message: 'User created!',
+            if (!user) {
+                return res.status(400).json({ success: false, error: err })
+            }
+
+            user
+                .save()
+                .then(() => {
+                    return res.status(201).json({
+                        success: true,
+                        id: user._id,
+                        message: 'User created!',
+                    })
+                })
+                .catch(error => {
+                    return res.status(400).json({
+                        error,
+                        message: 'User not created!',
+                    })
+                })
+        }else {
+            return res.status(449).json({
+                message: '449',
             })
-        })
-        .catch(error => {
-            return res.status(400).json({
-                error,
-                message: 'User not created!',
-            })
-        })
+        }
+    });
 }
 
 function decodeBase64Image(dataString) {

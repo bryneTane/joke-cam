@@ -1,7 +1,7 @@
 class Store{
     
     defs = []; people = [];
-    server = 'http://54.37.9.214/test-joke/server';
+    server = 'http://friedrich-tane.tech/joke-cam/server';
 
     setDefs = storeJson => {
         this.defs = storeJson;
@@ -20,6 +20,11 @@ class Store{
     } 
 
     getPeople = () => this.people;
+
+    addPerson = (person) => {
+        if(this.people[person.id]) console.log("this person already exists");
+        else this.people[person.id] = person; 
+    }
 }
 
 export default new Store();

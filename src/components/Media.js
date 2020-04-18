@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {Redirect} from 'react-router-dom';
 import '../css/Home.css';
 import Skeleton from './Skeleton';
@@ -8,9 +8,9 @@ import Typography from '@material-ui/core/Typography';
 import CameraAltOutlinedIcon from '@material-ui/icons/CameraAltOutlined';
 import Fab from '@material-ui/core/Fab';
 import Divider from '@material-ui/core/Divider';
-import { purple, green } from '@material-ui/core/colors';
+import { green } from '@material-ui/core/colors';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import Source from '../tools/data';
+// import Source from '../tools/data';
 import Loader from 'react-loader-spinner';
 import { Player } from 'video-react';
 import ReactAudioPlayer from 'react-audio-player';

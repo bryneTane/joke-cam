@@ -13,52 +13,65 @@ import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import {green} from '@material-ui/core/colors';
 import Loader from 'react-loader-spinner';
 import Source from './tools/data';
+import PhoneAndroidIcon from '@material-ui/icons/PhoneAndroid';
 import './App.css';
 
 function App() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [store, setStore] = useState([]);
+  const [pc, setPc] = useState(false);
 
   useEffect(() => {
-    fetch(`${process.env.PUBLIC_URL}/store.json`)
-      .then(resp => resp.json())
-      .then(resp => {
-        Source.setDefs(resp);
-        fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/users`)
-              .then(resp2 => resp2.json())
-              .then(resp2 => {
-                Source.setPeople(resp2.data);
-                // console.log(elts)
-                setIsLoading(false);
-              })
-              .catch(err => {
-                console.log(err);
-              });
-        // if(localStorage.getItem('joke-cam-user'))
-        //   fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/user/${JSON.parse(localStorage.getItem('joke-cam-user')).id}`)
-        //   .then(response => response.json())
-        //   .then(data => {
-        //       data = data.data;
-        //       localStorage.setItem('joke-cam-user', JSON.stringify({
-        //           date: data.date,
-        //           id: data.id,
-        //           name: data.name,
-        //           pp: data.pp,
-        //       }));
-        //       setIsLoading(false);
-        //   })
-        //   .catch(err => {
-        //       console.log(err);
-        //   })
-        // // console.log(resp);
-
-        setStore(resp);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    if(window.screen.width < 950){
+      fetch(`${process.env.PUBLIC_URL}/store.json`)
+        .then(resp => resp.json())
+        .then(resp => {
+          Source.setDefs(resp);
+          fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/users`)
+                .then(resp2 => resp2.json())
+                .then(resp2 => {
+                  if(resp2.data) Source.setPeople(resp2.data);
+                  // console.log(elts)
+                  setIsLoading(false);
+                })
+                .catch(err => {
+                  console.log(err);
+                });
+          // if(localStorage.getItem('joke-cam-user'))
+          //   fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/user/${JSON.parse(localStorage.getItem('joke-cam-user')).id}`)
+          //   .then(response => response.json())
+          //   .then(data => {
+          //       data = data.data;
+          //       localStorage.setItem('joke-cam-user', JSON.stringify({
+          //           date: data.date,
+          //           id: data.id,
+          //           name: data.name,
+          //           pp: data.pp,
+          //       }));
+          //       setIsLoading(false);
+          //   })
+          //   .catch(err => {
+          //       console.log(err);
+          //   })
+          // // console.log(resp);
+  
+          setStore(resp);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }else{
+      setPc(true);
+    }
   }, []);
+
+    if(pc) return <div className="pc">
+      <PhoneAndroidIcon className="pcIcon" />
+      <div className="pcText">
+        Please use a mobile phone !!! The PC version is coming soon !
+      </div>
+    </div>
 
     if (isLoading) return (
       <Loader

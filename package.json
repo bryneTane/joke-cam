@@ -2,7 +2,7 @@
   "name": "joke-cam",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://lamaterservice.com/test-joke",
+  "homepage": "http://friedrich-tane.tech/joke-cam",
   "dependencies": {
     "@material-ui/core": "^4.9.9",
     "@material-ui/icons": "^4.9.1",

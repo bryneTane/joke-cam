@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from 'react';
-import {Link} from 'react-router-dom';
+import React, {useState} from 'react';
+import {Link, Redirect} from 'react-router-dom';
 import '../css/Skeleton.css';
 
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Loader from 'react-loader-spinner';
+// import Loader from 'react-loader-spinner';
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
@@ -109,9 +109,8 @@ export default function Skeleton(props){
   const theme = useTheme();
   // const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
-  // const [person, setPerson] = useState([]);
+  const person= JSON.parse(localStorage.getItem('joke-cam-user'));
 
-  const person = JSON.parse(localStorage.getItem('joke-cam-user'));
   // useEffect(() => {
   //   fetch(`${process.env.PUBLIC_URL}/store.json`)
   //     .then(resp => resp.json())
@@ -146,6 +145,8 @@ export default function Skeleton(props){
 
   //   />
   // );
+
+  if(!person) return <Redirect to={'/signin'} />
 
   return (
     <div className={classes.root}>
@@ -199,10 +200,12 @@ export default function Skeleton(props){
         <Divider />
         <List>
           {storeDef.menu.map((item, index) => (
-            <ListItem button key={item.title}>
-              <ListItemIcon>{renderIcon(item.title)}</ListItemIcon>
-              <Link to={item.link}><ListItemText primary={item.title} /></Link>
-            </ListItem>
+            <Link to={item.link}>
+              <ListItem button key={item.title}>
+                <ListItemIcon>{renderIcon(item.title)}</ListItemIcon>
+                <ListItemText primary={item.title} />
+              </ListItem>
+            </Link>
           ))}
         </List>
         {/* <Divider />

@@ -36,78 +36,12 @@
             "title" : "Musical Quizz",
             "description" : "Djopa's musical quizz !",
             "link" : "https://musicalquiz.ovh/"
+        },
+        {
+            "title" : "La Mater Market",
+            "description" : "Votre marché chez vous !",
+            "link" : "https://www.lamater.net/",
+            "icon" : "lamater.png"
         }
-    ],
-    "jokes" : [
-        {
-            "id" : 1585789697593,
-            "title" : "La blague du siècle",
-            "filename" : "maureendance.mp4",
-            "description" : "Ceci est la description de la vidéo ci-dessus. Oui, une description",
-            "idPerson" : "mchloe",
-            "type" : "video"
-        },
-        {
-            "id" : 1585789697593,
-            "title" : "La blague du siècle",
-            "filename" : "test.mp4",
-            "description" : "Ceci est la description de la vidéo ci-dessus. Oui, une description",
-            "idPerson" : "mchloe",
-            "type" : "video"
-        },
-        {
-            "id" : 1585789697593,
-            "title" : "La blague du siècle",
-            "filename" : "sheney.mp3",
-            "description" : "Ceci est la description de la vidéo ci-dessus. Oui, une description",
-            "idPerson" : "bftane",
-            "type" : "audio"
-        },
-        {
-            "id" : 1585789697593,
-            "title" : "La blague du siècle",
-            "filename" : "molux.JPG",
-            "description" : "Ceci est la description de la vidéo ci-dessus. Oui, une description",
-            "idPerson" : "mchloe",
-            "type" : "image"
-        }
-    ],
-    "quotes" : [
-        {
-            "id" : 1585789697593,
-            "title" : "La blague du siècle",
-            "filename" : "maureendance.mp4",
-            "quote" : "Boire sans saouler c'est le gaspillage",
-            "author" : "Le Max",
-            "idPerson" : "mchloe"
-        },
-        {
-            "id" : 1585789697593,
-            "title" : "La blague du siècle",
-            "filename" : "test.mp4",
-            "quote" : "En fin d'année certains m'ont dit \"Monsieur, soyez clément\". Mais bien évidemment, je suis resté fidèle. ",
-            "author": "Dr Ciake",
-            "idPerson" : "mchloe"
-        }
-    ],
-    "people" : {
-        "mchloe" : {
-            "date" : 1585789697593,
-            "id" : "mchloe",
-            "name" : "Maureen Chloé",
-            "pp" : "mchloe.jpeg"
-        },
-        "bftane" : {
-            "date" : 1585789697593,
-            "id" : "bftane",
-            "name" : "Bryne Tane",
-            "pp" : ""
-        }
-    },
-    "connected" : {
-        "date" : 1585789697593,
-        "id" : "mchloe",
-        "name" : "Maureen Chloé",
-        "pp" : "mchloe.jpeg"
-    }
+    ]
 }

@@ -82,6 +82,7 @@ export default function SignUp(props) {
   const [ready, setReady] = useState(false);
   const [redirect, setRedirect] = useState(false);
   const [fail, setFail] = useState(false);
+  const [notFound, setNotFound] = useState(false);
 
   const handleChange = (e) => {
       if(e.target.id === 'username') setUserName(e.target.value.trim());
@@ -89,6 +90,7 @@ export default function SignUp(props) {
   }
 
   useEffect(() => {
+    if(localStorage.getItem("joke-cam-user")) setRedirect(true);
     if(userName.trim() && password.trim()) setReady(true);
       else setReady(false);
   }, [userName, password]);
@@ -97,20 +99,26 @@ export default function SignUp(props) {
     fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/user/${userName}`)
         .then(response => response.json())
         .then(data => {
-            data = data.data;
-            if(data.password === md5(password)){
-                console.log(data);
-                localStorage.setItem('joke-cam-user', JSON.stringify({
-                    date: data.date,
-                    id: data.id,
-                    name: data.name,
-                    pp: data.pp,
-                }));
-                setFail(false);
-                setRedirect(true);
+            if (data.error) {
+                setNotFound(true);
+                throw new Error("User not found");
             }else{
-                props.location.state.alert = false;
-                setFail(true);
+                data = data.data;
+                if(data.password === md5(password)){
+                    console.log(data);
+                    localStorage.setItem('joke-cam-user', JSON.stringify({
+                        date: data.date,
+                        id: data.id,
+                        name: data.name,
+                        pp: data.pp,
+                    }));
+                    setFail(false);
+                    setNotFound(false);
+                    setRedirect(true);
+                }else{
+                    props.location.state.alert = false;
+                    setFail(true);
+                }
             }
         })
         .catch(err => {
@@ -130,9 +138,10 @@ export default function SignUp(props) {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign ip
+          Sign in
         </Typography>
-        {fail && <Alert severity="error">Oops !!! Incorrect login or password !</Alert>}
+        {/* {fail && !notFound && <Alert severity="error">Oops !!! Incorrect login or password !</Alert>} */}
+        {notFound && <Alert severity="error">Oops !!! Incorrect login or password !</Alert>}
         {props.location.state && props.location.state.alert && <Alert severity="success">You were successfully registered ! :)</Alert>}
         <div className={classes.form} noValidate>
           <Grid container spacing={2}>
@@ -178,7 +187,7 @@ export default function SignUp(props) {
             className={classes.submit}
             onClick={handleSubmit}
           >
-            Sign Up
+            Sign In
           </Button>}
           <Grid container justify="flex-end" className={classes.link}>
             <Grid item>

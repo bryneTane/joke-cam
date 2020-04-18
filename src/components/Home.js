@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import '../css/Home.css';
 import Skeleton from './Skeleton';
 import { makeStyles } from '@material-ui/core/styles';

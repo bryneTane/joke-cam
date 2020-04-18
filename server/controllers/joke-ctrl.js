@@ -132,19 +132,24 @@ function decodeBase64Image(dataString) {
 // }
 
 deleteJoke = async (req, res) => {
-    await Joke.findOneAndDelete({ id: req.params.id }, (err, joke) => {
-        if (err) {
-            return res.status(400).json({ success: false, error: err });
-        }
+    let body = req.body;
+    fs.unlink(`./${directoryName(body.type)}/${body.filename}`, async (err) => {
+        if (err) throw err;
 
-        if (!joke) {
-            return res
-                .status(404)
-                .json({ success: false, error: `Joke not found` });
-        }
-
-        return res.status(200).json({ success: true, data: joke });
-    }).catch(err => console.log(err));
+        await Joke.findOneAndDelete({ id: req.params.id }, (err, joke) => {
+            if (err) {
+                return res.status(400).json({ success: false, error: err });
+            }
+    
+            if (!joke) {
+                return res
+                    .status(404)
+                    .json({ success: false, error: `Joke not found` });
+            }
+    
+            return res.status(200).json({ success: true, data: joke });
+        }).catch(err => console.log(err));
+    });
 }
 
 getJokeById = async (req, res) => {

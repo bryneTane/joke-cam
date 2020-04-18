@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import {Link} from 'react-router-dom';
 import '../css/Home.css';
-import Skeleton from './Skeleton';
+// import Skeleton from './Skeleton';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import { purple, green } from '@material-ui/core/colors';
+// import Typography from '@material-ui/core/Typography';
+// import Divider from '@material-ui/core/Divider';
+import { green } from '@material-ui/core/colors';
 import Fab from '@material-ui/core/Fab';
 import CameraAltOutlinedIcon from '@material-ui/icons/CameraAltOutlined';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
