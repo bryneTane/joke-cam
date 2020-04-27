@@ -190,7 +190,7 @@ export default function TextCard(props) {
                 }
             })
             .catch(err => {
-                setLike(!temp);
+                setLike(temp);
                 setLFail(true);
                 console.log(err);
             })

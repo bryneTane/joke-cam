@@ -197,7 +197,7 @@ likeOrDislikeJoke = (req, res) => {
         });
     }
 
-    joke.findOne({ id: req.params.id }, (err, joke) => {
+    Joke.findOne({ id: req.params.id }, (err, joke) => {
         if (err) {
             return res.status(404).json({
                 err,
