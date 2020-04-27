@@ -33,28 +33,31 @@ function App() {
                 .then(resp2 => {
                   if(resp2.data) Source.setPeople(resp2.data);
                   // console.log(elts)
-                  setIsLoading(false);
+                  if(localStorage.getItem('joke-cam-user')){
+                    fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/user/${JSON.parse(localStorage.getItem('joke-cam-user')).id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data = data.data;
+                        localStorage.setItem('joke-cam-user', JSON.stringify({
+                            date: data.date,
+                            id: data.id,
+                            name: data.name,
+                            pp: data.pp,
+                            liked: data.liked,
+                        }));
+                        setIsLoading(false);
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+                  }else{
+                    setIsLoading(false);
+                  }
                 })
                 .catch(err => {
                   console.log(err);
                 });
-          // if(localStorage.getItem('joke-cam-user'))
-          //   fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/user/${JSON.parse(localStorage.getItem('joke-cam-user')).id}`)
-          //   .then(response => response.json())
-          //   .then(data => {
-          //       data = data.data;
-          //       localStorage.setItem('joke-cam-user', JSON.stringify({
-          //           date: data.date,
-          //           id: data.id,
-          //           name: data.name,
-          //           pp: data.pp,
-          //       }));
-          //       setIsLoading(false);
-          //   })
-          //   .catch(err => {
-          //       console.log(err);
-          //   })
-          // // console.log(resp);
+          // console.log(resp);
   
           setStore(resp);
         })

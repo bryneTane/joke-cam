@@ -97,14 +97,20 @@ export default function Settings(props){
             quote: quote,
             idPerson: JSON.parse(localStorage.getItem('joke-cam-user')).id,
             author: author,
+            comments: [],
+            likes: [],
          })
       };
       fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/quote`, requestOptions)
           .then(response => response.json())
           .then(data => {
+            if (data.error) {
+                throw data.error;
+            }else{
               console.log(data);
               setFail(false);
               setRedirect(true);
+            }
           })
           .catch(err => {
               setFail(true);

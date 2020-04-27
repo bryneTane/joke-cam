@@ -116,6 +116,7 @@ export default function Media(props){
     const [description, setDescription] = useState('');
     const [fail, setFail] = useState(false);
     const [redirect, setRedirect] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     
     const handleFileRead = (e) => {
       setContent(fileReader.result);
@@ -123,6 +124,7 @@ export default function Media(props){
     }
 
     const publish = () => {
+      setIsLoading(true);
       const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -132,17 +134,25 @@ export default function Media(props){
             idPerson: JSON.parse(localStorage.getItem('joke-cam-user')).id,
             type: type,
             file: content,
+            comments: [],
+            likes: [],
          })
       };
       fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/joke`, requestOptions)
           .then(response => response.json())
           .then(data => {
+            if (data.error) {
+              throw data.error;
+            }else{
               console.log(data);
               setFail(false);
               setRedirect(true);
+              setIsLoading(false);
+            }
           })
           .catch(err => {
               setFail(true);
+              setIsLoading(false);
               console.log(err);
           })
     }
@@ -165,6 +175,18 @@ export default function Media(props){
     }
 
     if(redirect) return <Redirect to={'/jokes'} />;
+
+    if (isLoading) return (
+      <Loader
+        type="Puff"
+        color={green[500]}
+        height={100}
+        width={100}
+        className='loader'
+      //   timeout={3000} //3 secs
+
+      />
+    );
 
     return (
         <div>

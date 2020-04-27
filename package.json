@@ -2,7 +2,7 @@
   "name": "joke-cam",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://friedrich-tane.tech/joke-cam",
+  "homepage": "https://friedrich-tane.tech",
   "dependencies": {
     "@material-ui/core": "^4.9.9",
     "@material-ui/icons": "^4.9.1",
@@ -10,7 +10,9 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "binary-file": "^0.2.3",
     "env-cmd": "^10.1.0",
+    "exif-js": "^2.3.0",
     "md5": "^2.2.1",
     "moment": "^2.24.0",
     "react": "^16.13.1",

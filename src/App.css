@@ -61,6 +61,10 @@ a{
   margin-bottom: 30px;
 }
 
+.MuiPaper-elevation1{
+  /* box-shadow: none !important; */
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

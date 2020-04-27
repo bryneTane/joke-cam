@@ -200,7 +200,7 @@ export default function Skeleton(props){
         <Divider />
         <List>
           {storeDef.menu.map((item, index) => (
-            <Link to={item.link}>
+            <Link to={item.link} key={index}>
               <ListItem button key={item.title}>
                 <ListItemIcon>{renderIcon(item.title)}</ListItemIcon>
                 <ListItemText primary={item.title} />

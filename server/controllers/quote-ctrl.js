@@ -94,6 +94,78 @@ createQuote = (req, res) => {
 //     });
 // }
 
+commentQuote = (req, res) => {
+    const body = req.body;
+
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a body to update',
+        });
+    }
+
+    Quote.findOne({ id: req.params.id }, (err, quote) => {
+        if (err) {
+            return res.status(404).json({
+                err,
+                message: 'Quote not found!',
+            });
+        }
+        quote.comments = body.comments;
+        quote
+            .save()
+            .then(() => {
+                return res.status(200).json({
+                    success: true,
+                    id: quote.id,
+                    message: 'Quote updated!',
+                });
+            })
+            .catch(error => {
+                return res.status(404).json({
+                    error,
+                    message: 'Quote not updated!',
+                });
+            });
+    });
+}
+
+likeOrDislikeQuote = (req, res) => {
+    const body = req.body;
+
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a body to update',
+        });
+    }
+
+    Quote.findOne({ id: req.params.id }, (err, quote) => {
+        if (err) {
+            return res.status(404).json({
+                err,
+                message: 'Quote not found!',
+            });
+        }
+        quote.likes = body.likes;
+        quote
+            .save()
+            .then(() => {
+                return res.status(200).json({
+                    success: true,
+                    id: quote.id,
+                    message: 'Quote updated!',
+                });
+            })
+            .catch(error => {
+                return res.status(404).json({
+                    error,
+                    message: 'Quote not updated!',
+                });
+            });
+    });
+}
+
 deleteQuote = async (req, res) => {
     await Quote.findOneAndDelete({ id: req.params.id }, (err, quote) => {
         if (err) {
@@ -145,4 +217,6 @@ module.exports = {
     deleteQuote,
     getQuotes,
     getQuoteById,
+    commentQuote,
+    likeOrDislikeQuote,
 }

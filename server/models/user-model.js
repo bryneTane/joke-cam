@@ -8,6 +8,9 @@ const User = new Schema(
         name: { type: String, required: true },
         pp: { type: String, required: false },
         password: { type: String, required: true },
+        liked: [
+            {type: String, required: true},
+        ],
     },
     { timestamps: true },
 )

@@ -16,6 +16,7 @@ import Container from '@material-ui/core/Container';
 import { green } from '@material-ui/core/colors';
 import Alert from '@material-ui/lab/Alert';
 import md5 from 'md5';
+import Loader from 'react-loader-spinner';
 
 const CssTextField = withStyles({
     root: {
@@ -85,6 +86,7 @@ export default function SignUp() {
   const [redirect, setRedirect] = useState(false);
   const [fail, setFail] = useState(false);
   const [idUsed, setIdUsed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
       if(e.target.id === 'firstname') setFirstName(e.target.value.trim());
@@ -99,15 +101,17 @@ export default function SignUp() {
   }, [firstName, userName, password, cpassword]);
 
   const handleSubmit = () => {
+      setIsLoading(true);
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
             date: Date.now(),
-            id: userName,
+            id: userName.toLowerCase(),
             name: firstName,
             pp: "",
             password: md5(password),
+            liked: [],
          })
     };
     fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/user`, requestOptions)
@@ -121,10 +125,12 @@ export default function SignUp() {
             setFail(false);
             setIdUsed(false);
             setRedirect(true);
+            setIsLoading(false)
         })
         .catch(err => {
             setFail(true);
             console.log(err);
+            setIsLoading(false);
         })
   }
 
@@ -132,6 +138,19 @@ export default function SignUp() {
                                         pathname: '/signin',
                                         state: {alert: true},
                                     }} />
+
+
+    if (isLoading) return (
+        <Loader
+            type="Puff"
+            color={green[500]}
+            height={100}
+            width={100}
+            className='loader'
+        //   timeout={3000} //3 secs
+
+        />
+        );
 
   return (
     <Container component="main" maxWidth="xs">

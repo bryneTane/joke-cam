@@ -9,6 +9,17 @@ const Joke = new Schema(
         description: { type: String, required: false },
         idPerson: { type: String, required: true },
         type: { type: String, required: true },
+        comments: [
+            {
+                id: { type: String, required: true },
+                body: {type: String, required: true}, 
+                date: {type: Number, required: true}, 
+                idPerson: {type: String, required: true},
+            }
+        ],
+        likes: [
+            {type: String, required: true},
+        ],
     },
     { timestamps: true },
 )

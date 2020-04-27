@@ -16,6 +16,8 @@ import Container from '@material-ui/core/Container';
 import { green } from '@material-ui/core/colors';
 import Alert from '@material-ui/lab/Alert';
 import md5 from 'md5';
+import Loader from 'react-loader-spinner';
+import Source from '../tools/data';
 
 const CssTextField = withStyles({
     root: {
@@ -83,19 +85,33 @@ export default function SignUp(props) {
   const [redirect, setRedirect] = useState(false);
   const [fail, setFail] = useState(false);
   const [notFound, setNotFound] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
-      if(e.target.id === 'username') setUserName(e.target.value.trim());
+      if(e.target.id === 'username') setUserName(e.target.value.toLowerCase().trim());
       if(e.target.id === 'password') setPassword(e.target.value);
   }
 
   useEffect(() => {
+    fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/users`)
+    .then(resp2 => resp2.json())
+    .then(resp2 => {
+      if(resp2.data) Source.setPeople(resp2.data);
+      // console.log(elts)
+    })
+    .catch(err => {
+      console.log(err);
+    });
+  }, [])
+
+  useEffect(() => {
     if(localStorage.getItem("joke-cam-user")) setRedirect(true);
     if(userName.trim() && password.trim()) setReady(true);
-      else setReady(false);
+    else setReady(false);
   }, [userName, password]);
 
   const handleSubmit = () => {
+    setIsLoading(true);
     fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/user/${userName}`)
         .then(response => response.json())
         .then(data => {
@@ -111,13 +127,16 @@ export default function SignUp(props) {
                         id: data.id,
                         name: data.name,
                         pp: data.pp,
+                        liked: data.liked,
                     }));
                     setFail(false);
                     setNotFound(false);
                     setRedirect(true);
+                    setIsLoading(false);
                 }else{
                     props.location.state.alert = false;
                     setFail(true);
+                    setIsLoading(false);
                 }
             }
         })
@@ -125,10 +144,23 @@ export default function SignUp(props) {
             props.location.state.alert = false;
             setFail(true);
             console.log(err);
+            setIsLoading(false);
         })
   }
 
   if(redirect) return <Redirect to={'/home'} />
+
+  if (isLoading) return (
+    <Loader
+      type="Puff"
+      color={green[500]}
+      height={100}
+      width={100}
+      className='loader'
+    //   timeout={3000} //3 secs
+
+    />
+  );
 
   return (
     <Container component="main" maxWidth="xs">

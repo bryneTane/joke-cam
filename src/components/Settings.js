@@ -19,6 +19,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import WallpaperIcon from '@material-ui/icons/Wallpaper';
 import ExifOrientationImg from 'react-exif-orientation-img';
 import Alert from '@material-ui/lab/Alert';
+import Loader from 'react-loader-spinner';
 
 const CssTextField = withStyles({
     root: {
@@ -155,56 +156,69 @@ export default function Settings(props){
     const classes = useStyles();
     // const storeDef = Source.getDefs();
     const [connected, setConnected] = useState(JSON.parse(localStorage.getItem('joke-cam-user')))
-    const [content, setContent] = useState(connected.pp ? `${Source.server}/img/${connected.pp}` : null);
+    // const [content, setContent] = useState(null);
     const [name, setName] = useState(connected.name);
     const [fail, setFail] = useState(false);
     const [logout, setlogout] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const textChange = (e) => {
         setName(e.target.value);
       }
 
       const deletePhoto = () => {
-          setContent(null);
+          // setContent(null);
+          // console.log(content)
+          handleSend("none");
       }
 
-      const handleSend = () => {
-        console.log(content)
+      const handleSend = (p) => {
+        // console.log(content)
+        const timestamp = Date.now();
+        setIsLoading(true);
         const requestOptions = {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
-              id: connected.id,
               name: name,
-              pp: (content && content.startsWith(Source.server)) ? "" : content,
+              pp: p,
+              timestamp: timestamp,
            })
         };
         fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/user/${connected.id}`, requestOptions)
             .then(response => response.json())
             .then(data => {
+              if (data.error) {
+                throw data.error;
+              }else{
                 console.log(data);
                 localStorage.setItem('joke-cam-user', JSON.stringify({
                     id: connected.id,
-                    name: connected.name,
+                    name: name,
                     date: connected.date,
-                    pp: content ? (connected.id + '.jpg') : "",
+                    pp: (p && p !== "none") ? (connected.id + '-' + timestamp+'.jpg') : "",
+                    liked: data.liked,
                   })
                 );
+                setConnected(JSON.parse(localStorage.getItem('joke-cam-user')));
                 setFail(false);
+              }
+              setIsLoading(false);
             })
             .catch(err => {
                 setFail(true);
+                setIsLoading(false);
                 console.log(err);
             })
       }
 
       const handleFileRead = (e) => {
-        setContent(fileReader.result);
-        // console.log(content);
+        // setContent(fileReader.result);
+        handleSend(fileReader.result);
       }
   
       const handleFileChosen = (file) => {
-        setContent(null);
+        // setContent(null);
         console.log(file.type);
         // setType(file.type);
         fileReader = new FileReader();
@@ -218,6 +232,18 @@ export default function Settings(props){
       }
 
     if(logout) return <Redirect to={'/signin'} />
+
+    if (isLoading) return (
+      <Loader
+        type="Puff"
+        color={green[500]}
+        height={100}
+        width={100}
+        className='loader'
+      //   timeout={3000} //3 secs
+
+      />
+    );
 
     return (
         <div>
@@ -241,9 +267,9 @@ export default function Settings(props){
                         onChange={e => handleFileChosen(e.target.files[0])}
                     />
                     <div className={classes.composite}>
-                        { content ?
+                        { (connected.pp && connected.pp !== "none") ?
                             <Avatar aria-label="recipe" className={classes.avatar}>
-                                <ExifOrientationImg src={content} alt="publish" className={classes.image} />
+                                <img src={`${Source.server}/img/${connected.pp}`} alt="publish" className={classes.image} />
                             </Avatar> 
                             :
                             <Avatar aria-label="recipe" className={classes.avatar}>
@@ -265,7 +291,7 @@ export default function Settings(props){
                         //   className={classes.field}
                         onChange={textChange}
                         />
-                    {name && <Button variant="contained" color="primary" onClick={handleSend} className={classes.publish}>
+                    {name && <Button variant="contained" color="primary" onClick={() => handleSend(null)} className={classes.publish}>
                                                 Save
                                             </Button>}
                     {fail && <Alert severity="error">Oops !!! The request unfortunately failed !</Alert>}

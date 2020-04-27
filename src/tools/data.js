@@ -1,7 +1,7 @@
 class Store{
     
     defs = []; people = [];
-    server = 'http://friedrich-tane.tech/joke-cam/server';
+    server = 'http://localhost:3000';
 
     setDefs = storeJson => {
         this.defs = storeJson;
