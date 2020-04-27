@@ -60,6 +60,7 @@ const useStyles = makeStyles((theme) => ({
     },
     author: {
         float: "right",
+        marginTop: 10,
     },
     quoteContent: {
         paddingTop: 0,
@@ -117,6 +118,8 @@ let dateDisplay = (date) => {
 
 export default function TextCard(props) {
     const classes = useStyles();
+    const connected = JSON.parse(localStorage.getItem('joke-cam-user'));
+
     const [isLoading, setIsLoading] = useState(true);
     const [redirect, setRedirect] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -126,12 +129,72 @@ export default function TextCard(props) {
     const [comment, setComment] = useState("");
     const [textRef, setTextRef] = useState(null);
     const [cFail, setCFail] = useState(false);
+    const [lFail, setLFail] = useState(false);
+    const [like, setLike] = useState(connected.liked.indexOf(props.item.id) > -1);
+
     const people = Source.getPeople();
     let person = people[props.idPerson];
 
+    
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
+
+    const handleLikeOrDislike = () => {
+        const temp = like;
+        setLike(!temp);
+        const requestOptions = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                like: connected.id,
+            })
+        };
+        fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/quote/like/${props.item.id}`, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw data.error;
+                }else{
+                    console.log(data);
+                    const requestOptions = {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            like: props.item.id,
+                        })
+                    };
+                    fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/user/like/${connected.id}`, requestOptions)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.error) {
+                                throw data.error;
+                            }else{
+                                console.log(data);
+                                setLFail(false);
+                                props.reload();
+                                localStorage.setItem('joke-cam-user', JSON.stringify({
+                                    date: connected.date,
+                                    id: connected.id,
+                                    name: connected.name,
+                                    pp: connected.pp,
+                                    liked: data.liked,
+                                }));
+                            }
+                        })
+                        .catch(err => {
+                            setLike(temp);
+                            setLFail(true);
+                            console.log(err);
+                        })
+                }
+            })
+            .catch(err => {
+                setLike(!temp);
+                setLFail(true);
+                console.log(err);
+            })
+    }
 
     useEffect(() => {
         if (!person) {
@@ -220,7 +283,7 @@ export default function TextCard(props) {
         setComment({
             body: e.target.value.trim(),
             date: Date.now(),
-            idPerson: JSON.parse(localStorage.getItem('joke-cam-user')).id,
+            idPerson: connected.id,
         });
         setReady(e.target.value.trim() ? true : false);
     }
@@ -253,6 +316,7 @@ export default function TextCard(props) {
     return (
         <Card className={classes.root}>
              {cFail && <Alert severity="error">Oops !!! Could not be commented !</Alert>}
+             {lFail && <Alert severity="error">Oops !!! Could not be liked/disliked !</Alert>}
             <CardHeader
                 avatar={person.pp ?
                     <Avatar aria-label="recipe" className={classes.avatar}
@@ -265,7 +329,7 @@ export default function TextCard(props) {
                     </Avatar>
                 }
                 action={
-                    person.id === JSON.parse(localStorage.getItem('joke-cam-user')).id &&
+                    person.id === connected.id &&
                     <IconButton aria-label="settings" onClick={() => setVisible(!visible)}>
                         <MoreVertIcon />
                     </IconButton>
@@ -273,7 +337,7 @@ export default function TextCard(props) {
                 title={person.name}
                 subheader={dateDisplay(props.item.date)}
             />
-            {visible && person.id === JSON.parse(localStorage.getItem('joke-cam-user')).id && <List className={classes.list}>
+            {visible && person.id === connected.id && <List className={classes.list}>
                 <ListItem button onClick={deleteItem} key="del">
                     <ListItemIcon><DeleteIcon /></ListItemIcon>
                     <ListItemText primary={'Delete'} />
@@ -289,9 +353,10 @@ export default function TextCard(props) {
                 </Typography>
             </CardContent>
             <CardActions disableSpacing className={classes.actions}>
-                <IconButton aria-label="add to favorites">
-                    <FavoriteIcon />
+                <IconButton aria-label="add to favorites" onClick={handleLikeOrDislike}>
+                    <FavoriteIcon color={like ? "secondary" : "action"} />
                 </IconButton>
+            {(person.id === connected.id) && <span>{props.item.likes.length}</span>}
                 {/* <IconButton aria-label="share">
             <ShareIcon />
           </IconButton> */}

@@ -204,7 +204,8 @@ likeOrDislikeJoke = (req, res) => {
                 message: 'Joke not found!',
             });
         }
-        joke.likes = body.likes;
+        if(joke.likes.indexOf(body.like) > -1) joke.likes = joke.likes.filter(elt => elt !== body.like);
+        else joke.likes.push(body.like);
         joke
             .save()
             .then(() => {

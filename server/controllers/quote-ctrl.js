@@ -147,7 +147,8 @@ likeOrDislikeQuote = (req, res) => {
                 message: 'Quote not found!',
             });
         }
-        quote.likes = body.likes;
+        if(quote.likes.indexOf(body.like) > -1) quote.likes = quote.likes.filter(elt => elt !== body.like);
+        else quote.likes.push(body.like);
         quote
             .save()
             .then(() => {

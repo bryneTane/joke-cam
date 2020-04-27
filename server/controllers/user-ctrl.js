@@ -182,13 +182,15 @@ likeOrDislikePost = (req, res) => {
                 message: 'Quote not found!',
             });
         }
-        user.liked = body.liked;
+        if(user.liked.indexOf(body.like) > -1) user.liked = user.liked.filter(elt => elt !== body.like);
+        else user.liked.push(body.like);
         user
             .save()
             .then(() => {
                 return res.status(200).json({
                     success: true,
                     id: user.id,
+                    liked: user.liked,
                     message: 'User updated!',
                 });
             })
