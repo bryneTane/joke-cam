@@ -1,19 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
-import Skeleton from './Skeleton';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
-import { purple, green } from '@material-ui/core/colors';
-import Divider from '@material-ui/core/Divider';
-import Loader from 'react-loader-spinner';
+import { purple} from '@material-ui/core/colors';
 import moment from 'moment';
-import { Player } from 'video-react';
-import ReactAudioPlayer from 'react-audio-player';
 import { Skeleton as Skel } from '@material-ui/lab';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -22,12 +15,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteIcon from '@material-ui/icons/Delete';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ExifOrientationImg from 'react-exif-orientation-img';
 import "video-react/dist/video-react.css";
 import Source from '../tools/data';
-import MediaCard from './MediaCard';
 
 const useStyles = makeStyles((theme) => ({
     root: {

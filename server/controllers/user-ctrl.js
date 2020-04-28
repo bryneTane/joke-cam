@@ -79,7 +79,7 @@ updateUser = async (req, res) => {
                 message: 'User not found!',
             });
         }
-        user.pp = (body.pp === "none") ? "" : body.pp;
+        user.pp = (body.pp === "none") ? "" : (body.pp ? body.pp : user.pp);
         user.name = body.name;
         if (user.pp) {
             if (user.pp !== "none") {

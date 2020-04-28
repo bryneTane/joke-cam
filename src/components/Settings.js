@@ -17,9 +17,12 @@ import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import WallpaperIcon from '@material-ui/icons/Wallpaper';
-import ExifOrientationImg from 'react-exif-orientation-img';
+// import ExifOrientationImg from 'react-exif-orientation-img';
+import Snackbar from '@material-ui/core/Snackbar';
+import Slide from '@material-ui/core/Slide';
 import Alert from '@material-ui/lab/Alert';
 import Loader from 'react-loader-spinner';
+import Backdrop from '@material-ui/core/Backdrop';
 
 const CssTextField = withStyles({
     root: {
@@ -98,12 +101,20 @@ logout: {
   marginTop: 40,
   width: '70%',
 },
+backdrop: {
+  zIndex: theme.zIndex.drawer + 1,
+  color: '#fff',
+},
 }));
 
 const actions = [
     { icon: <EditIcon />, name: 'Change' },
     { icon: <DeleteIcon />, name: 'Delete' },
   ];
+
+  function TransitionRight(props) {
+    return <Slide {...props} direction="right" />;
+  }
 
 function OpenIconSpeedDial(props) {
     const classes = useStyles();
@@ -161,9 +172,13 @@ export default function Settings(props){
     const [fail, setFail] = useState(false);
     const [logout, setlogout] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [ready, setReady] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [transition, setTransition] = useState(undefined);
 
     const textChange = (e) => {
         setName(e.target.value);
+        setReady(true);
       }
 
       const deletePhoto = () => {
@@ -203,6 +218,10 @@ export default function Settings(props){
                 );
                 Source.setPP(connected.id, picture);
                 setConnected(JSON.parse(localStorage.getItem('joke-cam-user')));
+                if(p && (p !== "none")){
+                  setTransition(() => TransitionRight);
+                  setOpen(true);
+                }
                 setFail(false);
               }
               setIsLoading(false);
@@ -236,15 +255,17 @@ export default function Settings(props){
     if(logout) return <Redirect to={'/signin'} />
 
     if (isLoading) return (
-      <Loader
-        type="Puff"
-        color={green[500]}
-        height={100}
-        width={100}
-        className='loader'
-      //   timeout={3000} //3 secs
-
-      />
+      <Backdrop className={classes.backdrop} open={true}>
+        <Loader
+          type="Puff"
+          color={green[500]}
+          height={100}
+          width={100}
+          className='loader'
+        //   timeout={3000} //3 secs
+  
+        />
+      </Backdrop>
     );
 
     return (
@@ -293,7 +314,7 @@ export default function Settings(props){
                         //   className={classes.field}
                         onChange={textChange}
                         />
-                    {name && <Button variant="contained" color="primary" onClick={() => handleSend(null)} className={classes.publish}>
+                    {name && ready && <Button variant="contained" color="primary" onClick={() => handleSend(null)} className={classes.publish}>
                                                 Save
                                             </Button>}
                     {fail && <Alert severity="error">Oops !!! The request unfortunately failed !</Alert>}
@@ -302,6 +323,14 @@ export default function Settings(props){
                     </Button>
                 </div>
             </Skeleton>
+            <Snackbar
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              open={open}
+              severity="success"
+              autoHideDuration={1500}
+              TransitionComponent={transition}
+              message="Picture succesfully saved"
+            />
         </div>
     ); 
     
