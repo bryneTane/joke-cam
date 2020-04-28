@@ -24,6 +24,7 @@ import Button from '@material-ui/core/Button';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import CommentCard from './CommentCard';
 import Alert from '@material-ui/lab/Alert';
+import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 import moment from 'moment';
 // import { Player } from 'video-react';
 import "video-react/dist/video-react.css";
@@ -353,7 +354,9 @@ export default function TextCard(props) {
                 <IconButton aria-label="add to favorites" onClick={handleLikeOrDislike}>
                     <FavoriteIcon color={like ? "secondary" : "action"} />
                 </IconButton>
-            {(person.id === connected.id) && <span>{props.item.likes.length}</span>}
+                {(person.id === connected.id) && <span>{props.item.likes.length}</span>}
+                <ChatBubbleIcon />
+                {<span>{props.item.comments.length}</span>}
                 {/* <IconButton aria-label="share">
             <ShareIcon />
           </IconButton> */}

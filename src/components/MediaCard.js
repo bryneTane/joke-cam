@@ -29,6 +29,7 @@ import "video-react/dist/video-react.css";
 import Source from '../tools/data';
 import CommentCard from './CommentCard';
 import Alert from '@material-ui/lab/Alert';
+import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -378,6 +379,8 @@ export default function MediaCard(props) {
                     <FavoriteIcon color={like ? "secondary" : "action"} />
                 </IconButton>
                 {(person.id === connected.id) && <span>{props.item.likes.length}</span>}
+                <ChatBubbleIcon />
+                {<span>{props.item.comments.length}</span>}
                     {/* <IconButton aria-label="share">
             <ShareIcon />
           </IconButton> */}

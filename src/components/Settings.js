@@ -22,7 +22,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Slide from '@material-ui/core/Slide';
 import Alert from '@material-ui/lab/Alert';
 import Loader from 'react-loader-spinner';
-import Backdrop from '@material-ui/core/Backdrop';
+import MuiAlert from '@material-ui/lab/Alert';
+// import Backdrop from '@material-ui/core/Backdrop';
 
 const CssTextField = withStyles({
     root: {
@@ -255,17 +256,15 @@ export default function Settings(props){
     if(logout) return <Redirect to={'/signin'} />
 
     if (isLoading) return (
-      <Backdrop className={classes.backdrop} open={true}>
-        <Loader
-          type="Puff"
-          color={green[500]}
-          height={100}
-          width={100}
-          className='loader'
-        //   timeout={3000} //3 secs
-  
-        />
-      </Backdrop>
+      <Loader
+        type="Puff"
+        color={green[500]}
+        height={100}
+        width={100}
+        className='loader'
+      //   timeout={3000} //3 secs
+
+      />
     );
 
     return (
@@ -329,8 +328,9 @@ export default function Settings(props){
               severity="success"
               autoHideDuration={1500}
               TransitionComponent={transition}
-              message="Picture succesfully saved"
-            />
+            >
+              <MuiAlert elevation={6} variant="filled">Picture succesfully changed</MuiAlert>
+            </Snackbar>
         </div>
     ); 
     
