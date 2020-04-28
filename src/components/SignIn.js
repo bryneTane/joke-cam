@@ -121,7 +121,7 @@ export default function SignUp(props) {
             }else{
                 data = data.data;
                 if(data.password === md5(password)){
-                    console.log(data);
+                    // console.log(data);
                     localStorage.setItem('joke-cam-user', JSON.stringify({
                         date: data.date,
                         id: data.id,
@@ -134,14 +134,14 @@ export default function SignUp(props) {
                     setRedirect(true);
                     setIsLoading(false);
                 }else{
-                    props.location.state.alert = false;
+                  if(props.location.state) props.location.state.alert = false;
                     setFail(true);
                     setIsLoading(false);
                 }
             }
         })
         .catch(err => {
-            props.location.state.alert = false;
+            if(props.location.state) props.location.state.alert = false;
             setFail(true);
             console.log(err);
             setIsLoading(false);
@@ -173,7 +173,7 @@ export default function SignUp(props) {
           Sign in
         </Typography>
         {/* {fail && !notFound && <Alert severity="error">Oops !!! Incorrect login or password !</Alert>} */}
-        {notFound && <Alert severity="error">Oops !!! Incorrect login or password !</Alert>}
+        {/*notFound*/fail && <Alert severity="error">Oops !!! Incorrect login or password !</Alert>}
         {props.location.state && props.location.state.alert && <Alert severity="success">You were successfully registered ! :)</Alert>}
         <div className={classes.form} noValidate>
           <Grid container spacing={2}>

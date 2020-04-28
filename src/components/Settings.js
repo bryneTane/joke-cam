@@ -192,14 +192,16 @@ export default function Settings(props){
                 throw data.error;
               }else{
                 console.log(data);
+                const picture = (p && p !== "none") ? (connected.id + '-' + timestamp+'.jpg') : "";
                 localStorage.setItem('joke-cam-user', JSON.stringify({
                     id: connected.id,
                     name: name,
                     date: connected.date,
-                    pp: (p && p !== "none") ? (connected.id + '-' + timestamp+'.jpg') : "",
+                    pp: picture,
                     liked: data.liked,
                   })
                 );
+                Source.setPP(connected.id, picture);
                 setConnected(JSON.parse(localStorage.getItem('joke-cam-user')));
                 setFail(false);
               }

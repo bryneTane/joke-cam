@@ -85,7 +85,7 @@ updateUser = async (req, res) => {
             if (user.pp !== "none") {
                 var imageBuffer = decodeBase64Image(body.pp);
                 // console.log(process.env.PUBLIC_URL)
-                fs.writeFile(`../public/img/${req.params.id}-${body.timestamp}.jpg`, imageBuffer.data, function (err) {
+                fs.writeFile(`./img/${req.params.id}-${body.timestamp}.jpg`, imageBuffer.data, function (err) {
                     // console.log(err);
                     if (!err) {
                         user.pp = req.params.id + '-' + body.timestamp + '.jpg';
@@ -94,7 +94,7 @@ updateUser = async (req, res) => {
                                 console.log(`Orientation was ${orientation}`)
                                 console.log(`Dimensions after rotation: ${dimensions.width}x${dimensions.height}`)
                                 console.log(`Quality: ${quality}`)
-                                fs.writeFile(`../public/img/${req.params.id}-${body.timestamp}.jpg`, buffer, function (err) {
+                                fs.writeFile(`./img/${req.params.id}-${body.timestamp}.jpg`, buffer, function (err) {
                                     if (err) console.log('failed to save the rotated image');
                                     else {
                                         user
@@ -103,6 +103,7 @@ updateUser = async (req, res) => {
                                                 return res.status(200).json({
                                                     success: true,
                                                     id: user.id,
+                                                    liked: user.liked,
                                                     message: 'User updated!',
                                                 });
                                             })
@@ -127,6 +128,7 @@ updateUser = async (req, res) => {
                                         return res.status(200).json({
                                             success: true,
                                             id: user.id,
+                                            liked: user.liked,
                                             message: 'User updated!',
                                         });
                                     })
@@ -152,6 +154,7 @@ updateUser = async (req, res) => {
                     return res.status(200).json({
                         success: true,
                         id: user.id,
+                        liked: user.liked,
                         message: 'User updated!',
                     });
                 })
@@ -239,10 +242,8 @@ getUsers = async (req, res) => {
         if (err) {
             return res.status(400).json({ success: false, error: err });
         }
-        if (!users.length) {
-            return res
-                .status(404)
-                .json({ success: false, error: `User not found` });
+        if (!users.length || !users) {
+            res.status(200).json({ success: true, data: [] });
         }
         return res.status(200).json({ success: true, data: users });
     }).catch(err => console.log(err));

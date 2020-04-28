@@ -56,7 +56,7 @@ createQuote = (req, res) => {
 //         if(body.pp){
 //             var imageBuffer = decodeBase64Image(body.pp);
 //             // console.log(process.env.PUBLIC_URL)
-//             fs.writeFile(`../public/img/${req.params.id}.jpg`, imageBuffer.data, function(err) { 
+//             fs.writeFile(`./img/${req.params.id}.jpg`, imageBuffer.data, function(err) { 
 //                 // console.log(err);
 //                 if(!err) quote.pp = req.params.id + '.jpg';
 //                 quote
@@ -204,9 +204,7 @@ getQuotes = async (req, res) => {
             return res.status(400).json({ success: false, error: err });
         }
         if (!quotes.length) {
-            return res
-                .status(404)
-                .json({ success: false, error: `Quote not found` });
+            return res.status(200).json({ success: true, data: [] });
         }
         return res.status(200).json({ success: true, data: quotes });
     }).catch(err => console.log(err));

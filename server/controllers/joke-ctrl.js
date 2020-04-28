@@ -25,7 +25,7 @@ createJoke = (req, res) => {
 
     var imageBuffer = decodeBase64Image(body.file);
     // console.log(process.env.PUBLIC_URL)
-    fs.writeFile(`../public/${directoryName(body.type)}/${filename}`, imageBuffer.data, function (err) {
+    fs.writeFile(`./${directoryName(body.type)}/${filename}`, imageBuffer.data, function (err) {
         // console.log(err);
         if (!err) {
             body.filename = filename;
@@ -40,7 +40,7 @@ createJoke = (req, res) => {
                     console.log(`Orientation was ${orientation}`)
                     console.log(`Dimensions after rotation: ${dimensions.width}x${dimensions.height}`)
                     console.log(`Quality: ${quality}`)
-                    fs.writeFile(`../public/${directoryName(body.type)}/${filename}`, buffer, function (err) {
+                    fs.writeFile(`./${directoryName(body.type)}/${filename}`, buffer, function (err) {
                         if (err) console.log('failed to save the rotated image');
                         else console.log('image successfully rotated');
                     });
@@ -113,7 +113,7 @@ function decodeBase64Image(dataString) {
 //         if(body.pp){
 //             var imageBuffer = decodeBase64Image(body.pp);
 //             // console.log(process.env.PUBLIC_URL)
-//             fs.writeFile(`../public/img/${req.params.id}.jpg`, imageBuffer.data, function(err) { 
+//             fs.writeFile(`./img/${req.params.id}.jpg`, imageBuffer.data, function(err) { 
 //                 // console.log(err);
 //                 if(!err) joke.pp = req.params.id + '.jpg';
 //                 joke
@@ -226,7 +226,7 @@ likeOrDislikeJoke = (req, res) => {
 
 deleteJoke = async (req, res) => {
     let body = req.body;
-    fs.unlink(`../public/${directoryName(body.type)}/${body.filename}`, async (err) => {
+    fs.unlink(`./${directoryName(body.type)}/${body.filename}`, async (err) => {
         if (err) throw err;
 
         await Joke.findOneAndDelete({ id: req.params.id }, (err, joke) => {
@@ -266,9 +266,7 @@ getJokes = async (req, res) => {
             return res.status(400).json({ success: false, error: err });
         }
         if (!jokes.length) {
-            return res
-                .status(404)
-                .json({ success: false, error: `Joke not found` });
+            return res.status(200).json({ success: true, data: [] });
         }
         return res.status(200).json({ success: true, data: jokes });
     }).catch(err => console.log(err));

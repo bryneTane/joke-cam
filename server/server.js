@@ -26,17 +26,17 @@ app.use('/api', jokeRouter);
 app.use('/api', quoteRouter);
 
 // const httpServer = http.createServer(app);
-// const httpsServer = https.createServer({
-//   key: fs.readFileSync('/etc/letsencrypt/live/friedrich-tane.tech/privkey.pem'),
-//   cert: fs.readFileSync('/etc/letsencrypt/live/friedrich-tane.tech/fullchain.pem'),
-// }, app);
+const httpsServer = https.createServer({
+  key: fs.readFileSync('/etc/letsencrypt/live/joke-cam.friedrich-tane.tech/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/joke-cam.friedrich-tane.tech/fullchain.pem'),
+}, app);
 
-// // httpServer.listen(80, () => {
-// //     console.log('HTTP Server running on port 80');
-// // });
-
-// httpsServer.listen(apiPort, () => {
-//     console.log(`HTTPS Server running on port ${apiPort}`);
+// httpServer.listen(80, () => {
+//     console.log('HTTP Server running on port 80');
 // });
 
-app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));
+httpsServer.listen(apiPort, () => {
+    console.log(`HTTPS Server running on port ${apiPort}`);
+});
+
+// app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));
