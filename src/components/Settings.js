@@ -102,10 +102,6 @@ logout: {
   marginTop: 40,
   width: '70%',
 },
-backdrop: {
-  zIndex: theme.zIndex.drawer + 1,
-  color: '#fff',
-},
 }));
 
 const actions = [
@@ -114,7 +110,7 @@ const actions = [
   ];
 
   function TransitionRight(props) {
-    return <Slide {...props} direction="right" />;
+    return <Slide {...props} direction="left" />;
   }
 
 function OpenIconSpeedDial(props) {
@@ -326,7 +322,8 @@ export default function Settings(props){
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
               open={open}
               severity="success"
-              autoHideDuration={1500}
+              autoHideDuration={1500} 
+              onClose={() => {setOpen(false)}}
               TransitionComponent={transition}
             >
               <MuiAlert elevation={6} variant="filled">Picture succesfully changed</MuiAlert>

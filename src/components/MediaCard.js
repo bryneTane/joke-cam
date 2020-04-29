@@ -136,6 +136,7 @@ export default function MediaCard(props) {
     let person = people[props.idPerson];
 
     const handleExpandClick = () => {
+        setCount(1);
         setExpanded(!expanded);
     };
 
@@ -379,12 +380,14 @@ export default function MediaCard(props) {
                     <FavoriteIcon color={like ? "secondary" : "action"} />
                 </IconButton>
                 {(person.id === connected.id) && <span>{props.item.likes.length}</span>}
-                <ChatBubbleIcon />
+                <IconButton onClick={handleExpandClick}>
+                    <ChatBubbleIcon />
+                </IconButton>
                 {<span>{props.item.comments.length}</span>}
                     {/* <IconButton aria-label="share">
             <ShareIcon />
           </IconButton> */}
-                <IconButton
+                {/* <IconButton
                     className={clsx(classes.expand, {
                         [classes.expandOpen]: expanded,
                     })}
@@ -393,7 +396,7 @@ export default function MediaCard(props) {
                     aria-label="show more"
                 >
                     <ExpandMoreIcon />
-                </IconButton>
+                </IconButton> */}
             </CardActions>
             <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
