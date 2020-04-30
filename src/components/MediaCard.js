@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -7,7 +6,6 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
-import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import { purple, green } from '@material-ui/core/colors';
 import moment from 'moment';
@@ -21,7 +19,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteIcon from '@material-ui/icons/Delete';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import Button from '@material-ui/core/Button';
@@ -30,6 +27,7 @@ import Source from '../tools/data';
 import CommentCard from './CommentCard';
 import Alert from '@material-ui/lab/Alert';
 import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
+import PopAvatar from './PopAvatar';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -148,6 +146,7 @@ export default function MediaCard(props) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 like: connected.id,
+                actor: connected.name,
             })
         };
         fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/joke/like/${props.item.id}`, requestOptions)
@@ -155,7 +154,7 @@ export default function MediaCard(props) {
             .then(data => {
                 if (data.error) {
                     throw data.error;
-                }else{
+                } else {
                     console.log(data);
                     const requestOptions = {
                         method: 'PUT',
@@ -169,7 +168,7 @@ export default function MediaCard(props) {
                         .then(data => {
                             if (data.error) {
                                 throw data.error;
-                            }else{
+                            } else {
                                 console.log(data);
                                 setLFail(false);
                                 props.reload();
@@ -231,7 +230,7 @@ export default function MediaCard(props) {
             .then(data => {
                 if (data.error) {
                     throw data.error;
-                }else{
+                } else {
                     console.log(data);
                     props.reload();
                 }
@@ -263,6 +262,7 @@ export default function MediaCard(props) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 comments: data,
+                actor: connected.name,
             })
         };
         fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/joke/comment/${props.item.id}`, requestOptions)
@@ -270,7 +270,7 @@ export default function MediaCard(props) {
             .then(data => {
                 if (data.error) {
                     throw data.error;
-                }else{
+                } else {
                     console.log(data);
                     setCFail(false);
                     setVisible(false);
@@ -324,16 +324,7 @@ export default function MediaCard(props) {
             {cFail && <Alert severity="error">Oops !!! Could not be commented !</Alert>}
             {lFail && <Alert severity="error">Oops !!! Could not be liked/disliked !</Alert>}
             <CardHeader
-                avatar={person.pp ?
-                    <Avatar aria-label="recipe" className={classes.avatar}
-                        src={`${Source.server}/img/${person.pp}`} />
-                    :
-                    <Avatar aria-label="recipe" className={classes.avatar}>
-                        {person.name.split(" ").map((item, index) => {
-                            if (index < 2) return item.charAt(0);
-                        })}
-                    </Avatar>
-                }
+                avatar={<PopAvatar person={person} />}
                 action={
                     person.id === connected.id &&
                     <IconButton aria-label="settings" onClick={() => setVisible(!visible)}>
@@ -384,7 +375,7 @@ export default function MediaCard(props) {
                     <ChatBubbleIcon />
                 </IconButton>
                 {<span>{props.item.comments.length}</span>}
-                    {/* <IconButton aria-label="share">
+                {/* <IconButton aria-label="share">
             <ShareIcon />
           </IconButton> */}
                 {/* <IconButton
@@ -404,7 +395,7 @@ export default function MediaCard(props) {
                         props.item.comments.length ?
                             <div>
                                 {props.item.comments.sort((a, b) => Number(b.date) - Number(a.date)).map((item, index) => (count >= index) && <CommentCard item={item} key={index} delComment={() => handleDelComment(item.id)} idPerson={item.idPerson} />)}
-                                {(count < (props.item.comments.length-1)) && <Button className={classes.buttonLoad} onClick={() => setCount(count+2)}>Load More...</Button>}
+                                {(count < (props.item.comments.length - 1)) && <Button className={classes.buttonLoad} onClick={() => setCount(count + 2)}>Load More...</Button>}
                             </div>
                             :
                             <Typography variant="body1" color="textPrimary" align='center' component="p">

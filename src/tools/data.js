@@ -1,5 +1,5 @@
-class Store{
-    
+class Store {
+
     defs = []; people = [];
     server = 'https://joke-cam.friedrich-tane.tech/server';
 
@@ -17,17 +17,17 @@ class Store{
             result[elt.id] = elt;
         });
         this.people = result;
-    } 
+    }
 
     getPeople = () => this.people;
 
     addPerson = (person) => {
-        if(this.people[person.id]) console.log("this person already exists");
-        else this.people[person.id] = person; 
+        if (this.people[person.id]) console.log("this person already exists");
+        else this.people[person.id] = person;
     }
 
     setPP = (id, pp) => {
-        if(!this.people[id]) console.log("this person does not exist");
+        if (!this.people[id]) console.log("this person does not exist");
         else this.people[id].pp = pp;
     }
 }

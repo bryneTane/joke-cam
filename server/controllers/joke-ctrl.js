@@ -1,5 +1,7 @@
 const fs = require('fs');
 const jo = require('jpeg-autorotate');
+const db = require('../db');
+const webpush = require('web-push');
 const options = { quality: 85 };
 
 const Joke = require('../models/joke-model');
@@ -168,10 +170,27 @@ commentJoke = (req, res) => {
                 message: 'Joke not found!',
             });
         }
+        let notif = false;
+        if(body.comments.length > joke.comments.length) notif = true;
         joke.comments = body.comments; 
         joke
             .save()
             .then(() => {
+                if(notif){
+                    const subscriptions = db.collection('subscriptions');
+                    const subscripts = subscriptions.find({idPerson: joke.idPerson});
+                    const payload = JSON.stringify({
+                        id: joke.idPerson,
+                        actor: body.actor,
+                        title: 'New comment !',
+                        body: body.actor + ' commented your joke !',
+                    })
+                    subscripts.forEach(subscript => {
+                        webpush.sendNotification(subscript.subs, payload)
+                        .then(result => console.log(result))
+                        .catch(e => console.log(e.stack))
+                    })
+                }
                 return res.status(200).json({
                     success: true,
                     id: joke.id,
@@ -204,11 +223,30 @@ likeOrDislikeJoke = (req, res) => {
                 message: 'Joke not found!',
             });
         }
+        let notif = false;
         if(joke.likes.indexOf(body.like) > -1) joke.likes = joke.likes.filter(elt => elt !== body.like);
-        else joke.likes.push(body.like);
+        else {
+            joke.likes.push(body.like);
+            notif = true;
+        }
         joke
             .save()
             .then(() => {
+                if(notif){
+                    const subscriptions = db.collection('subscriptions');
+                    const subscripts = subscriptions.find({idPerson: joke.idPerson});
+                    const payload = JSON.stringify({
+                        id: joke.idPerson,
+                        actor: body.actor,
+                        title: 'New like !',
+                        body: body.actor + ' liked your joke !',
+                    })
+                    subscripts.forEach(subscript => {
+                        webpush.sendNotification(subscript.subs, payload)
+                        .then(result => console.log('Result', result))
+                        .catch(e => console.log('Error', e))
+                    })
+                }
                 return res.status(200).json({
                     success: true,
                     id: joke.id,

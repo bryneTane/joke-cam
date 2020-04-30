@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Link, Redirect} from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -20,26 +20,26 @@ import Loader from 'react-loader-spinner';
 import Source from '../tools/data';
 
 const CssTextField = withStyles({
-    root: {
-      '& label.Mui-focused': {
-        color: 'green',
+  root: {
+    '& label.Mui-focused': {
+      color: 'green',
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: 'green',
+    },
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: 'green',
       },
-      '& .MuiInput-underline:after': {
-        borderBottomColor: 'green',
+      '&:hover fieldset': {
+        borderColor: 'yellow',
       },
-      '& .MuiOutlinedInput-root': {
-        '& fieldset': {
-          borderColor: 'green',
-        },
-        '&:hover fieldset': {
-          borderColor: 'yellow',
-        },
-        '&.Mui-focused fieldset': {
-          borderColor: 'green',
-        },
+      '&.Mui-focused fieldset': {
+        borderColor: 'green',
       },
     },
-  })(TextField);
+  },
+})(TextField);
 
 function Copyright() {
   return (
@@ -88,67 +88,75 @@ export default function SignUp(props) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
-      if(e.target.id === 'username') setUserName(e.target.value.toLowerCase().trim());
-      if(e.target.id === 'password') setPassword(e.target.value);
+    if (e.target.id === 'username') setUserName(e.target.value.toLowerCase().trim());
+    if (e.target.id === 'password') setPassword(e.target.value);
   }
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/users`)
-    .then(resp2 => resp2.json())
-    .then(resp2 => {
-      if(resp2.data) Source.setPeople(resp2.data);
-      // console.log(elts)
-    })
-    .catch(err => {
-      console.log(err);
-    });
+      .then(resp2 => resp2.json())
+      .then(resp2 => {
+        if (resp2.data) Source.setPeople(resp2.data);
+        // console.log(elts)
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }, [])
 
   useEffect(() => {
-    if(localStorage.getItem("joke-cam-user")) setRedirect(true);
-    if(userName.trim() && password.trim()) setReady(true);
+    if (localStorage.getItem("joke-cam-user")) setRedirect(true);
+    if (userName.trim() && password.trim()) setReady(true);
     else setReady(false);
   }, [userName, password]);
 
   const handleSubmit = () => {
     setIsLoading(true);
     fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/user/${userName}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                setNotFound(true);
-                throw new Error("User not found");
-            }else{
-                data = data.data;
-                if(data.password === md5(password)){
-                    // console.log(data);
-                    localStorage.setItem('joke-cam-user', JSON.stringify({
-                        date: data.date,
-                        id: data.id,
-                        name: data.name,
-                        pp: data.pp,
-                        liked: data.liked,
-                    }));
-                    setFail(false);
-                    setNotFound(false);
-                    setRedirect(true);
-                    setIsLoading(false);
-                }else{
-                  if(props.location.state) props.location.state.alert = false;
-                    setFail(true);
-                    setIsLoading(false);
-                }
-            }
-        })
-        .catch(err => {
-            if(props.location.state) props.location.state.alert = false;
-            setFail(true);
-            console.log(err);
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          setNotFound(true);
+          throw new Error("User not found");
+        } else {
+          data = data.data;
+          if (data.password === md5(password)) {
+            // console.log(data);
+            localStorage.setItem('joke-cam-user', JSON.stringify({
+              date: data.date,
+              id: data.id,
+              name: data.name,
+              pp: data.pp,
+              liked: data.liked,
+            }));
+            fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/notifications/subscribe`, {
+              method: 'POST',
+              body: JSON.stringify({idPerson: data.id, subs: JSON.parse(localStorage.getItem('joke-cam-subscription'))}),
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              // mode: 'no-cors'
+            })
+            setFail(false);
+            setNotFound(false);
+            setRedirect(true);
             setIsLoading(false);
-        })
+          } else {
+            if (props.location.state) props.location.state.alert = false;
+            setFail(true);
+            setIsLoading(false);
+          }
+        }
+      })
+      .catch(err => {
+        if (props.location.state) props.location.state.alert = false;
+        setFail(true);
+        console.log(err);
+        setIsLoading(false);
+      })
   }
 
-  if(redirect) return <Redirect to={'/home'} />
+  if (redirect) return <Redirect to={'/home'} />
 
   if (isLoading) return (
     <Loader

@@ -17,6 +17,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteIcon from '@material-ui/icons/Delete';
 import "video-react/dist/video-react.css";
 import Source from '../tools/data';
+import PopAvatar from './PopAvatar';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -139,16 +140,7 @@ export default function CommentCard(props) {
     return (
         <Card className={classes.root}>
             <CardHeader
-                avatar={person.pp ?
-                    <Avatar aria-label="recipe" className={classes.avatar}
-                        src={`${Source.server}/img/${person.pp}`} />
-                    :
-                    <Avatar aria-label="recipe" className={classes.avatar}>
-                        {person.name.split(" ").map((item, index) => {
-                            if (index < 2) return item.charAt(0);
-                        })}
-                    </Avatar>
-                }
+                avatar={<PopAvatar person={person} />}
                 action={
                     person.id === JSON.parse(localStorage.getItem('joke-cam-user')).id &&
                     <IconButton aria-label="settings" onClick={() => setVisible(!visible)}>

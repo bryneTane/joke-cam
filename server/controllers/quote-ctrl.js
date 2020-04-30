@@ -1,4 +1,6 @@
 const fs = require('fs');
+const db = require('../db');
+const webpush = require('web-push');
 
 const Quote = require('../models/quote-model');
 
@@ -111,10 +113,27 @@ commentQuote = (req, res) => {
                 message: 'Quote not found!',
             });
         }
+        let notif = false;
+        if(body.comments.length > quote.comments.length) notif = true;
         quote.comments = body.comments;
         quote
             .save()
             .then(() => {
+                if(notif){
+                    const subscriptions = db.collection('subscriptions');
+                    const subscripts = subscriptions.find({idPerson: quote.idPerson});
+                    const payload = JSON.stringify({
+                        id: quote.idPerson,
+                        actor: body.actor,
+                        title: 'New comment !',
+                        body: body.actor + ' commented your quote !',
+                    })
+                    subscripts.forEach(subscript => {
+                        webpush.sendNotification(subscript.subs, payload)
+                        .then(result => console.log(result))
+                        .catch(e => console.log(e.stack))
+                    })
+                }
                 return res.status(200).json({
                     success: true,
                     id: quote.id,
@@ -147,11 +166,30 @@ likeOrDislikeQuote = (req, res) => {
                 message: 'Quote not found!',
             });
         }
+        let notif = false;
         if(quote.likes.indexOf(body.like) > -1) quote.likes = quote.likes.filter(elt => elt !== body.like);
-        else quote.likes.push(body.like);
+        else {
+            quote.likes.push(body.like);
+            notif = true;
+        }
         quote
             .save()
             .then(() => {
+                if(notif){
+                    const subscriptions = db.collection('subscriptions');
+                    const subscripts = subscriptions.find({idPerson: quote.idPerson});
+                    const payload = JSON.stringify({
+                        id: quote.idPerson,
+                        actor: body.actor,
+                        title: 'New like !',
+                        body: body.actor + ' liked your quote !',
+                    })
+                    subscripts.forEach(subscript => {
+                        webpush.sendNotification(subscript.subs, payload)
+                        .then(result => console.log('Result', result))
+                        .catch(e => console.log('Error', e.stack))
+                    })
+                }
                 return res.status(200).json({
                     success: true,
                     id: quote.id,

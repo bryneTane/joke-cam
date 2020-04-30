@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
-import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
-import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import { purple, green } from '@material-ui/core/colors';
 import { Skeleton as Skel } from '@material-ui/lab';
@@ -18,7 +16,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteIcon from '@material-ui/icons/Delete';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import Button from '@material-ui/core/Button';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
@@ -29,6 +26,7 @@ import moment from 'moment';
 // import { Player } from 'video-react';
 import "video-react/dist/video-react.css";
 import Source from '../tools/data';
+import PopAvatar from './PopAvatar';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -133,7 +131,6 @@ export default function TextCard(props) {
     const people = Source.getPeople();
     let person = people[props.idPerson];
 
-    
     const handleExpandClick = () => {
         setCount(1);
         setExpanded(!expanded);
@@ -147,6 +144,7 @@ export default function TextCard(props) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 like: connected.id,
+                actor: connected.name,
             })
         };
         fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/quote/like/${props.item.id}`, requestOptions)
@@ -154,7 +152,7 @@ export default function TextCard(props) {
             .then(data => {
                 if (data.error) {
                     throw data.error;
-                }else{
+                } else {
                     console.log(data);
                     const requestOptions = {
                         method: 'PUT',
@@ -168,7 +166,7 @@ export default function TextCard(props) {
                         .then(data => {
                             if (data.error) {
                                 throw data.error;
-                            }else{
+                            } else {
                                 console.log(data);
                                 setLFail(false);
                                 props.reload();
@@ -224,7 +222,7 @@ export default function TextCard(props) {
             .then(data => {
                 if (data.error) {
                     throw data.error;
-                }else{
+                } else {
                     console.log(data);
                     setRedirect(true);
                 }
@@ -256,6 +254,7 @@ export default function TextCard(props) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 comments: data,
+                actor: connected.name,
             })
         };
         fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/api/quote/comment/${props.item.id}`, requestOptions)
@@ -263,7 +262,7 @@ export default function TextCard(props) {
             .then(data => {
                 if (data.error) {
                     throw data.error;
-                }else{
+                } else {
                     console.log(data);
                     setCFail(false);
                     setVisible(false);
@@ -314,19 +313,10 @@ export default function TextCard(props) {
 
     return (
         <Card className={classes.root}>
-             {cFail && <Alert severity="error">Oops !!! Could not be commented !</Alert>}
-             {lFail && <Alert severity="error">Oops !!! Could not be liked/disliked !</Alert>}
+            {cFail && <Alert severity="error">Oops !!! Could not be commented !</Alert>}
+            {lFail && <Alert severity="error">Oops !!! Could not be liked/disliked !</Alert>}
             <CardHeader
-                avatar={person.pp ?
-                    <Avatar aria-label="recipe" className={classes.avatar}
-                        src={`${Source.server}/img/${person.pp}`} />
-                    :
-                    <Avatar aria-label="recipe" className={classes.avatar}>
-                        {person.name.split(" ").map((item, index) => {
-                            if (index < 2) return item.charAt(0);
-                        })}
-                    </Avatar>
-                }
+                avatar={<PopAvatar person={person} />}
                 action={
                     person.id === connected.id &&
                     <IconButton aria-label="settings" onClick={() => setVisible(!visible)}>

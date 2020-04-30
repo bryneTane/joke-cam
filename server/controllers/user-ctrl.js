@@ -1,5 +1,6 @@
 const fs = require('fs');
 const jo = require('jpeg-autorotate');
+const webpush = require('web-push');
 const options = { quality: 85 };
 
 const User = require('../models/user-model');
@@ -26,6 +27,18 @@ createUser = (req, res) => {
             user
                 .save()
                 .then(() => {
+                    const subscriptions = db.collection('subscriptions');
+                    const subscripts = subscriptions.find({idPerson: body.id});
+                    const payload = JSON.stringify({
+                        id: body.id,
+                        title: 'Welcome on Joke-Cam !',
+                        body: 'Let\'s have fun together ! ;)',
+                    })
+                    subscripts.forEach(subscript => {
+                        webpush.sendNotification(subscript.subs, payload)
+                        .then(result => console.log(result))
+                        .catch(e => console.log(e.stack))
+                    })
                     return res.status(201).json({
                         success: true,
                         id: user._id,

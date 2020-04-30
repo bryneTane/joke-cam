@@ -245,8 +245,27 @@ export default function Settings(props){
       }
 
       const disconnect = () => {
-        localStorage.removeItem('joke-cam-user');
-        setlogout(true);
+        fetch(`${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}/notifications/subscribe`, {
+          method: 'POST',
+        body: JSON.stringify({idPerson: "", subs: JSON.parse(localStorage.getItem('joke-cam-subscription'))}),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          // mode: 'no-cors'
+        })
+        .then(rep => {
+          if (rep.error) {
+            throw rep.error;
+          }else {
+            setFail(false);
+            localStorage.removeItem('joke-cam-user');
+            setlogout(true);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          setFail(true);
+        })
       }
 
     if(logout) return <Redirect to={'/signin'} />
