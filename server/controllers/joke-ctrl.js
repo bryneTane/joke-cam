@@ -58,6 +58,19 @@ createJoke = (req, res) => {
             joke
                 .save()
                 .then(() => {
+                    const subscriptions = db.collection('subscriptions');
+                    const subscripts = subscriptions.find();
+                    const payload = JSON.stringify({
+                        id: joke.idPerson,
+                        // actor: body.actor,
+                        title: 'New Post :) !',
+                        body: joke.idPerson + ' published a joke !',
+                    })
+                    subscripts.forEach(subscript => {
+                        webpush.sendNotification(subscript.subs, payload)
+                        .then(result => console.log(result))
+                        .catch(e => console.log(e.stack))
+                    });
                     return res.status(201).json({
                         success: true,
                         id: joke.id,

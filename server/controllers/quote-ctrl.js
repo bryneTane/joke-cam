@@ -23,6 +23,19 @@ createQuote = (req, res) => {
     quote
         .save()
         .then(() => {
+            const subscriptions = db.collection('subscriptions');
+            const subscripts = subscriptions.find();
+            const payload = JSON.stringify({
+                id: quote.idPerson,
+                // actor: body.actor,
+                title: 'New Post :) !',
+                body: quote.idPerson + ' published a quote !',
+            })
+            subscripts.forEach(subscript => {
+                webpush.sendNotification(subscript.subs, payload)
+                    .then(result => console.log(result))
+                    .catch(e => console.log(e.stack))
+            })
             return res.status(201).json({
                 success: true,
                 id: quote.id,
@@ -114,14 +127,14 @@ commentQuote = (req, res) => {
             });
         }
         let notif = false;
-        if(body.comments.length > quote.comments.length) notif = true;
+        if (body.comments.length > quote.comments.length) notif = true;
         quote.comments = body.comments;
         quote
             .save()
             .then(() => {
-                if(notif){
+                if (notif) {
                     const subscriptions = db.collection('subscriptions');
-                    const subscripts = subscriptions.find({idPerson: quote.idPerson});
+                    const subscripts = subscriptions.find({ idPerson: quote.idPerson });
                     const payload = JSON.stringify({
                         id: quote.idPerson,
                         actor: body.actor,
@@ -130,8 +143,8 @@ commentQuote = (req, res) => {
                     })
                     subscripts.forEach(subscript => {
                         webpush.sendNotification(subscript.subs, payload)
-                        .then(result => console.log(result))
-                        .catch(e => console.log(e.stack))
+                            .then(result => console.log(result))
+                            .catch(e => console.log(e.stack))
                     })
                 }
                 return res.status(200).json({
@@ -167,7 +180,7 @@ likeOrDislikeQuote = (req, res) => {
             });
         }
         let notif = false;
-        if(quote.likes.indexOf(body.like) > -1) quote.likes = quote.likes.filter(elt => elt !== body.like);
+        if (quote.likes.indexOf(body.like) > -1) quote.likes = quote.likes.filter(elt => elt !== body.like);
         else {
             quote.likes.push(body.like);
             notif = true;
@@ -175,9 +188,9 @@ likeOrDislikeQuote = (req, res) => {
         quote
             .save()
             .then(() => {
-                if(notif){
+                if (notif) {
                     const subscriptions = db.collection('subscriptions');
-                    const subscripts = subscriptions.find({idPerson: quote.idPerson});
+                    const subscripts = subscriptions.find({ idPerson: quote.idPerson });
                     const payload = JSON.stringify({
                         id: quote.idPerson,
                         actor: body.actor,
@@ -186,8 +199,8 @@ likeOrDislikeQuote = (req, res) => {
                     })
                     subscripts.forEach(subscript => {
                         webpush.sendNotification(subscript.subs, payload)
-                        .then(result => console.log('Result', result))
-                        .catch(e => console.log('Error', e.stack))
+                            .then(result => console.log('Result', result))
+                            .catch(e => console.log('Error', e.stack))
                     })
                 }
                 return res.status(200).json({
